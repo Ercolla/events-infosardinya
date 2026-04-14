@@ -15,9 +15,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
     <script src="events-data.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -583,106 +587,70 @@
         </div>
     </footer>
 
-    <!-- Script per caricamento dinamico evento -->
+    <!-- Script per caricamento dinamico evento da Supabase -->
     <script>
-        // Database degli eventi con coordinate
-        const eventsData = {
-            1: {
-                title: 'Festival del Sole',
-                category: 'Musica',
-                date: '20 Maggio 2024',
-                location: 'Cagliari',
-                image: 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
-                description: 'Immergiti nella magica atmosfera del Festival del Sole di Cagliari, uno dei più grandi festival musicali della Sardegna. Scopri i migliori artisti italiani e internazionali che si alterneranno sul palco per tre giorni consecutivi di musica, divertimento e cultura. Un\'occasione unica per vivere momenti indimenticabili circondato da migliaia di appassionati di musica provenienti da tutta Italia.',
-                time: '20:00 - 23:00',
-                capacity: '5000+ persone',
-                lat: 39.2238,
-                lng: 9.1217
-            },
-            2: {
-                title: 'Mostra d\'Arte Contemporanea',
-                category: 'Arte',
-                date: '15 Giugno 2024',
-                location: 'Sassari',
-                image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
-                description: 'Scopri le opere d\'arte più affascinanti della scena contemporanea italiana presso il Museo Sanna di Sassari. Questa esposizione riunisce i migliori artisti moderni che esplorrano i temi della sostenibilità, identità e trasformazione. Una mostra che non puoi perdere se sei appassionato d\'arte e cultura.',
-                time: '10:00 - 18:00',
-                capacity: '2000+ persone',
-                lat: 40.7275,
-                lng: 8.5598
-            },
-            3: {
-                title: 'Torneo Beach Volley',
-                category: 'Sport',
-                date: '25 Luglio 2024',
-                location: 'Porto Cervo',
-                image: 'https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
-                description: 'Vieni a tifare al più esclusivo torneo di beach volley della Costa Smeralda! Squadre professioniste si sfideranno sulle spiagge dorate di Porto Cervo in una competizione adrenalinica. Divertiti con l\'atmosfera estiva, la musica dal vivo e deliziosi cocktail mentre guardi le migliori partite di volley sulla sabbia.',
-                time: '15:00 - 22:00',
-                capacity: '1000+ persone',
-                lat: 41.1353,
-                lng: 9.5404
-            },
-            4: {
-                title: 'Food Festival Sardo',
-                category: 'Gastronomia',
-                date: '5 Agosto 2024',
-                location: 'Alghero',
-                image: 'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
-                description: 'Assapora i sapori autentici della Sardegna al Food Festival di Alghero! Scopri le specialità culinarie tradizionali e moderne preparate dai migliori chef regionali. Dalle paste tipiche sarde ai frutti di mare freschi, dai vini locali ai dolci tradizionali: un\'esperienza gastronomica che non dimenticherai.',
-                time: '18:00 - 23:00',
-                capacity: '3000+ persone',
-                lat: 40.5544,
-                lng: 8.3160
-            }
-        };
-
-        // Funzione per caricare i dati dell'evento
-        function loadEventDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('id') || 1;
-            const event = eventsData[eventId];
-
-            if (event) {
-                // Aggiorna il titolo della pagina
-                document.title = `${event.title} - Events InfoSardinya`;
-
-                // Aggiorna breadcrumb
-                document.getElementById('breadcrumb-event').textContent = event.title;
-
-                // Aggiorna hero
-                document.getElementById('event-badge').textContent = event.category;
-                document.getElementById('event-title').textContent = event.title;
-                document.getElementById('hero-date').textContent = event.date;
-                document.getElementById('hero-location').textContent = event.location;
-                document.getElementById('hero-category').textContent = event.category;
-
-                // Aggiorna immagine e descrizione
-                document.getElementById('event-image').src = event.image;
-                document.getElementById('event-description').textContent = event.description;
-
-                // Aggiorna sidebar
-                document.getElementById('sidebar-date').textContent = event.date;
-                document.getElementById('sidebar-time').textContent = event.time;
-                document.getElementById('sidebar-location').textContent = event.location;
-                document.getElementById('sidebar-capacity').textContent = event.capacity;
-
-                // Aggiorna colore hero in base alla categoria
-                const heroSection = document.getElementById('event-hero');
-                const categoryColors = {
-                    'Musica': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                    'Arte': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                    'Sport': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                    'Gastronomia': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
-                };
-                const bgImage = categoryColors[event.category] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
-                heroSection.style.backgroundImage = `linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%), ${bgImage}`;
-            }
-        }
-
         // Variabile globale per la mappa
         let map = null;
         let currentMarker = null;
+
+        // Funzione per caricare i dati dell'evento
+        async function loadEventDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id') || 1;
+
+            try {
+                const event = await getEventById(eventId);
+
+                if (event) {
+                    // Aggiorna il titolo della pagina
+                    document.title = `${event.title} - Events InfoSardinya`;
+
+                    // Aggiorna breadcrumb
+                    document.getElementById('breadcrumb-event').textContent = event.title;
+
+                    // Aggiorna hero
+                    document.getElementById('event-badge').textContent = event.category;
+                    document.getElementById('event-title').textContent = event.title;
+                    document.getElementById('hero-date').textContent = event.date;
+                    document.getElementById('hero-location').textContent = event.location;
+                    document.getElementById('hero-category').textContent = event.category;
+
+                    // Aggiorna immagine e descrizione
+                    document.getElementById('event-image').src = event.image || 'https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900';
+                    document.getElementById('event-description').textContent = event.description || 'Descrizione non disponibile';
+
+                    // Aggiorna sidebar
+                    document.getElementById('sidebar-date').textContent = event.date;
+                    document.getElementById('sidebar-time').textContent = event.time || 'Orario non specificato';
+                    document.getElementById('sidebar-location').textContent = event.location;
+                    document.getElementById('sidebar-capacity').textContent = event.capacity || 'Posti disponibili';
+
+                    // Aggiorna colore hero in base alla categoria
+                    const heroSection = document.getElementById('event-hero');
+                    const categoryColors = {
+                        'Musica': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'Arte': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'Sport': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'Gastronomia': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
+                    };
+                    const bgImage = categoryColors[event.category] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
+                    heroSection.style.backgroundImage = `linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%), ${bgImage}`;
+
+                    // Inizializza la mappa se ci sono coordinate
+                    if (event.lat && event.lng) {
+                        setTimeout(() => {
+                            initializeMap(event.lat, event.lng, event.location);
+                        }, 100);
+                    }
+                } else {
+                    console.error('Evento non trovato');
+                    document.body.innerHTML = '<div style="text-align: center; padding: 2rem; color: #FF2122;">Evento non trovato</div>';
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento dell\'evento:', error);
+                document.body.innerHTML = '<div style="text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento dell\'evento</div>';
+            }
+        }
 
         // Funzione per inizializzare e aggiornare la mappa
         function initializeMap(lat, lng, locationName) {
@@ -718,20 +686,8 @@
         }
 
         // Carica i dati quando la pagina è pronta
-        document.addEventListener('DOMContentLoaded', function() {
-            loadEventDetails();
-
-            // Inizializza la mappa dopo il caricamento dei dati
-            const urlParams = new URLSearchParams(window.location.search);
-            const eventId = urlParams.get('id') || 1;
-            const event = eventsData[eventId];
-
-            if (event) {
-                // Aggiungi un piccolo delay per assicurarti che il DOM sia pronto
-                setTimeout(() => {
-                    initializeMap(event.lat, event.lng, event.location);
-                }, 100);
-            }
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadEventDetails();
         });
     </script>
 

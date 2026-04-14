@@ -13,9 +13,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
     <script src="events-data.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -503,89 +507,10 @@
         <div class="max-w-7xl mx-auto px-4">
             <h2 class="section-title">Trending Ora</h2>
 
-            <div class="events-highlight-grid">
-                <!-- Evento 1 -->
-                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=1'" style="cursor: pointer;">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Festival" class="event-image">
-                        <span class="event-badge-top">In Evidenza</span>
-                    </div>
-                    <div class="event-content-highlight">
-                        <div class="event-category">Musica</div>
-                        <h3 class="event-title-highlight">Festival del Sole</h3>
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                📅 20 Maggio 2024
-                            </div>
-                            <div class="event-meta-item">
-                                📍 Cagliari
-                            </div>
-                        </div>
-                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
-                    </div>
-                </div>
-
-                <!-- Evento 2 -->
-                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=2'" style="cursor: pointer;">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Mostra" class="event-image">
-                        <span class="event-badge-top">Nuovo</span>
-                    </div>
-                    <div class="event-content-highlight">
-                        <div class="event-category">Arte</div>
-                        <h3 class="event-title-highlight">Mostra d'Arte Contemporanea</h3>
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                📅 15 Giugno 2024
-                            </div>
-                            <div class="event-meta-item">
-                                📍 Sassari
-                            </div>
-                        </div>
-                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
-                    </div>
-                </div>
-
-                <!-- Evento 3 -->
-                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=3'" style="cursor: pointer;">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Beach Event" class="event-image">
-                        <span class="event-badge-top">Top Pick</span>
-                    </div>
-                    <div class="event-content-highlight">
-                        <div class="event-category">Sport</div>
-                        <h3 class="event-title-highlight">Torneo Beach Volley</h3>
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                📅 25 Luglio 2024
-                            </div>
-                            <div class="event-meta-item">
-                                📍 Porto Cervo
-                            </div>
-                        </div>
-                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
-                    </div>
-                </div>
-
-                <!-- Evento 4 -->
-                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=4'" style="cursor: pointer;">
-                    <div class="event-image-wrapper">
-                        <img src="https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Food Festival" class="event-image">
-                        <span class="event-badge-top">Popolare</span>
-                    </div>
-                    <div class="event-content-highlight">
-                        <div class="event-category">Gastronomia</div>
-                        <h3 class="event-title-highlight">Food Festival Sardo</h3>
-                        <div class="event-meta">
-                            <div class="event-meta-item">
-                                📅 5 Agosto 2024
-                            </div>
-                            <div class="event-meta-item">
-                                📍 Alghero
-                            </div>
-                        </div>
-                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
-                    </div>
+            <div class="events-highlight-grid" id="events-container">
+                <!-- Gli eventi verranno caricati dinamicamente da Supabase -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">
+                    ⏳ Caricamento eventi...
                 </div>
             </div>
         </div>
@@ -662,6 +587,55 @@
             <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
         </div>
     </footer>
+
+    <!-- Script per caricamento dinamico degli eventi da Supabase -->
+    <script>
+        // Funzione per renderizzare gli eventi
+        function renderEvents(events) {
+            const container = document.getElementById('events-container');
+
+            if (events.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">Nessun evento disponibile al momento</div>';
+                return;
+            }
+
+            // Prendi i primi 4 eventi
+            const topEvents = events.slice(0, 4);
+
+            container.innerHTML = topEvents.map(event => `
+                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer;">
+                    <div class="event-image-wrapper">
+                        <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image">
+                        <span class="event-badge-top">${event.badge_text || 'In Evidenza'}</span>
+                    </div>
+                    <div class="event-content-highlight">
+                        <div class="event-category">${event.category}</div>
+                        <h3 class="event-title-highlight">${event.title}</h3>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                📅 ${event.date}
+                            </div>
+                            <div class="event-meta-item">
+                                📍 ${event.location}
+                            </div>
+                        </div>
+                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Carica gli eventi all'avvio della pagina
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const events = await getAllEvents();
+                renderEvents(events);
+            } catch (error) {
+                console.error('Errore nel caricamento degli eventi:', error);
+                document.getElementById('events-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento degli eventi. Riprova più tardi.</div>';
+            }
+        });
+    </script>
 
 </body>
 </html>

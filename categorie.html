@@ -13,9 +13,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
     <script src="events-data.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -322,6 +326,86 @@
             </div>
         </div>
     </section>
+
+    <!-- Sezione Eventi della Categoria Selezionata -->
+    <section class="categories-content" style="background: #f9f9f9; display: none;" id="category-events-section">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title">
+                Eventi in <span id="category-name-display">questa categoria</span>
+            </h2>
+
+            <div class="events-grid" id="category-events-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 2rem;">
+                <!-- Gli eventi verranno caricati dinamicamente -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">
+                    ⏳ Caricamento eventi...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script per caricare eventi della categoria -->
+    <script>
+        const categoryNames = {
+            'musica': 'Musica',
+            'arte': 'Arte e Cultura',
+            'sport': 'Sport',
+            'gastronomia': 'Gastronomia',
+            'teatro': 'Teatro e Spettacoli',
+            'famiglia': 'Bambini e Famiglia'
+        };
+
+        // Funzione per renderizzare gli eventi
+        function renderCategoryEvents(events, categoryFilter) {
+            const container = document.getElementById('category-events-container');
+            const section = document.getElementById('category-events-section');
+            const categoryDisplay = document.getElementById('category-name-display');
+
+            if (events.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">Nessun evento disponibile in questa categoria</div>';
+                section.style.display = 'block';
+                return;
+            }
+
+            // Aggiorna il nome della categoria
+            const categoryName = categoryNames[categoryFilter] || categoryFilter;
+            categoryDisplay.textContent = categoryName;
+
+            // Renderizza gli eventi
+            container.innerHTML = events.map(event => `
+                <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%;">
+                    <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" style="width: 100%; height: 220px; object-fit: cover;">
+                    <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <div style="color: #FF2122; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">${event.category}</div>
+                        <h3 style="font-size: 1.125rem; font-weight: 700; color: #151515; margin-bottom: 0.75rem; line-height: 1.4; flex-grow: 1;">${event.title}</h3>
+                        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: #686868; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">📅 ${event.date}</div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">📍 ${event.location}</div>
+                        </div>
+                        <div style="background: #0077B6; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem; width: 100%; text-decoration: none; display: inline-block; text-align: center;">Scopri di Più</div>
+                    </div>
+                </div>
+            `).join('');
+
+            section.style.display = 'block';
+        }
+
+        // Carica gli eventi al caricamento della pagina
+        document.addEventListener('DOMContentLoaded', async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryFilter = urlParams.get('filter');
+
+            if (categoryFilter && categoryFilter.toLowerCase() in categoryNames) {
+                try {
+                    const events = await getEventsByCategory(categoryNames[categoryFilter.toLowerCase()]);
+                    renderCategoryEvents(events, categoryFilter.toLowerCase());
+                } catch (error) {
+                    console.error('Errore nel caricamento degli eventi:', error);
+                    document.getElementById('category-events-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento degli eventi</div>';
+                    document.getElementById('category-events-section').style.display = 'block';
+                }
+            }
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="footer">

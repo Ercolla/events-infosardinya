@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="unsafe-url">
+    <title>Dettaglio Evento - Events InfoSardinya</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Leaflet per mappe -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+    <script src="events-data.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-section {
+            background: white;
+            padding: 1.5rem 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .breadcrumb {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-sardegna-blue);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #005fa3;
+        }
+
+        .breadcrumb span {
+            color: var(--color-text);
+        }
+
+        /* Hero Section */
+        .event-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%),
+                        url('https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: white;
+        }
+
+        .event-hero-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .event-badge {
+            display: inline-block;
+            background: var(--color-sardegna-yellow);
+            color: var(--color-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .event-hero h1 {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .event-hero-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 1.05rem;
+        }
+
+        .event-hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Contenuto Principale */
+        .event-detail-section {
+            padding: 3rem 1rem;
+            background: white;
+        }
+
+        .event-detail-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+
+        .event-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .event-image-full {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .event-description {
+            color: var(--color-text);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .event-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--color-sardegna-blue);
+        }
+
+        .event-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .highlight-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9f9f9 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--color-sardegna-blue);
+        }
+
+        .highlight-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .highlight-title {
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-text {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Sidebar */
+        .event-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, var(--color-sardegna-sand) 0%, #f0e0cd 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .info-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--color-text);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--color-primary);
+        }
+
+        .cta-button {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            width: 100%;
+        }
+
+        .cta-button:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
+        }
+
+        .social-share {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .social-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .social-btn:hover {
+            border-color: var(--color-sardegna-blue);
+            color: var(--color-sardegna-blue);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Mappa */
+        #event-map {
+            width: 100%;
+            height: 400px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        #event-map .leaflet-control {
+            z-index: 10;
+        }
+
+        .map-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .event-detail-container {
+                grid-template-columns: 1fr;
+            }
+
+            .event-hero-meta {
+                gap: 1rem;
+            }
+
+            #event-map {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb-section">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span>/</span>
+            <a href="eventi.html">Tutti gli Eventi</a>
+            <span>/</span>
+            <span id="breadcrumb-event">Evento</span>
+        </div>
+    </section>
+
+    <!-- Hero Section -->
+    <section class="event-hero" id="event-hero">
+        <div class="event-hero-content">
+            <span class="event-badge" id="event-badge">In Evidenza</span>
+            <h1 id="event-title">Titolo Evento</h1>
+            <div class="event-hero-meta">
+                <div class="event-hero-meta-item">
+                    📅 <span id="hero-date">Data</span>
+                </div>
+                <div class="event-hero-meta-item">
+                    📍 <span id="hero-location">Luogo</span>
+                </div>
+                <div class="event-hero-meta-item">
+                    🎭 <span id="hero-category">Categoria</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contenuto Principale -->
+    <section class="event-detail-section">
+        <div class="event-detail-container">
+            <!-- Main Content -->
+            <div class="event-main">
+                <img src="https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900" alt="Evento" class="event-image-full" id="event-image">
+
+                <div>
+                    <h2 class="event-section-title">Descrizione Evento</h2>
+                    <p class="event-description" id="event-description">
+                        Scopri i dettagli completi di questo incredibile evento organizzato a Cagliari. Un'occasione unica per vivere momenti indimenticabili circondato da amici e famiglia.
+                    </p>
+                </div>
+
+                <div class="map-container">
+                    <h2 class="event-section-title">Posizione dell'Evento</h2>
+                    <div id="event-map"></div>
+                    <p class="event-description" style="margin-top: 1rem; font-size: 0.95rem;">
+                        Clicca sulla mappa per visualizzare le indicazioni stradali. L'evento si terrà presso la location indicata nella città di <span id="map-city">Cagliari</span>.
+                    </p>
+                </div>
+
+                <div>
+                    <h2 class="event-section-title">Highlights</h2>
+                    <div class="event-highlights">
+                        <div class="highlight-card">
+                            <div class="highlight-icon">🎶</div>
+                            <div class="highlight-title">Musica dal Vivo</div>
+                            <div class="highlight-text">Spettacoli esclusivi dai migliori artisti</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="highlight-icon">🍽️</div>
+                            <div class="highlight-title">Food & Beverage</div>
+                            <div class="highlight-text">Specialità sarde e piatti internazionali</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="highlight-icon">👥</div>
+                            <div class="highlight-title">Comunità</div>
+                            <div class="highlight-text">Incontra persone con i tuoi stessi interessi</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 class="event-section-title">Informazioni Pratiche</h2>
+                    <div class="event-highlights">
+                        <div class="highlight-card">
+                            <div class="highlight-icon">🎫</div>
+                            <div class="highlight-title">Biglietti</div>
+                            <div class="highlight-text">Disponibili online. Prenotazione consigliata.</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="highlight-icon">🚗</div>
+                            <div class="highlight-title">Parcheggio</div>
+                            <div class="highlight-text">Ampi spazi disponibili nelle vicinanze</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="highlight-icon">♿</div>
+                            <div class="highlight-title">Accessibilità</div>
+                            <div class="highlight-text">Struttura completamente accessibile</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="event-sidebar">
+                <div class="info-box">
+                    <div class="info-item">
+                        <div class="info-icon">📅</div>
+                        <div class="info-content">
+                            <div class="info-label">Data</div>
+                            <div class="info-value" id="sidebar-date">20 Maggio 2024</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">🕐</div>
+                        <div class="info-content">
+                            <div class="info-label">Orario</div>
+                            <div class="info-value" id="sidebar-time">20:00 - 23:00</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">📍</div>
+                        <div class="info-content">
+                            <div class="info-label">Luogo</div>
+                            <div class="info-value" id="sidebar-location">Cagliari</div>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">👥</div>
+                        <div class="info-content">
+                            <div class="info-label">Capacità</div>
+                            <div class="info-value" id="sidebar-capacity">5000+ persone</div>
+                        </div>
+                    </div>
+
+                    <button class="cta-button">Acquista Biglietti</button>
+
+                    <div class="social-share">
+                        <button class="social-btn" title="Condividi su Facebook">f</button>
+                        <button class="social-btn" title="Condividi su Instagram">📷</button>
+                        <button class="social-btn" title="Condividi su Twitter">𝕏</button>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Informazioni di Contatto</h3>
+                    <div class="info-item">
+                        <div class="info-icon">📞</div>
+                        <div class="info-content">
+                            <div class="info-label">Telefono</div>
+                            <div class="info-value"><a href="tel:+390704567890" style="color: inherit; text-decoration: none;">+39 070 456 7890</a></div>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <div class="info-label">Email</div>
+                            <div class="info-value"><a href="mailto:info@eventsinfosardinya.it" style="color: inherit; text-decoration: none;">info@eventsinfosardinya.it</a></div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+    <!-- Script per caricamento dinamico evento -->
+    <script>
+        // Database degli eventi con coordinate
+        const eventsData = {
+            1: {
+                title: 'Festival del Sole',
+                category: 'Musica',
+                date: '20 Maggio 2024',
+                location: 'Cagliari',
+                image: 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
+                description: 'Immergiti nella magica atmosfera del Festival del Sole di Cagliari, uno dei più grandi festival musicali della Sardegna. Scopri i migliori artisti italiani e internazionali che si alterneranno sul palco per tre giorni consecutivi di musica, divertimento e cultura. Un\'occasione unica per vivere momenti indimenticabili circondato da migliaia di appassionati di musica provenienti da tutta Italia.',
+                time: '20:00 - 23:00',
+                capacity: '5000+ persone',
+                lat: 39.2238,
+                lng: 9.1217
+            },
+            2: {
+                title: 'Mostra d\'Arte Contemporanea',
+                category: 'Arte',
+                date: '15 Giugno 2024',
+                location: 'Sassari',
+                image: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
+                description: 'Scopri le opere d\'arte più affascinanti della scena contemporanea italiana presso il Museo Sanna di Sassari. Questa esposizione riunisce i migliori artisti moderni che esplorrano i temi della sostenibilità, identità e trasformazione. Una mostra che non puoi perdere se sei appassionato d\'arte e cultura.',
+                time: '10:00 - 18:00',
+                capacity: '2000+ persone',
+                lat: 40.7275,
+                lng: 8.5598
+            },
+            3: {
+                title: 'Torneo Beach Volley',
+                category: 'Sport',
+                date: '25 Luglio 2024',
+                location: 'Porto Cervo',
+                image: 'https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
+                description: 'Vieni a tifare al più esclusivo torneo di beach volley della Costa Smeralda! Squadre professioniste si sfideranno sulle spiagge dorate di Porto Cervo in una competizione adrenalinica. Divertiti con l\'atmosfera estiva, la musica dal vivo e deliziosi cocktail mentre guardi le migliori partite di volley sulla sabbia.',
+                time: '15:00 - 22:00',
+                capacity: '1000+ persone',
+                lat: 41.1353,
+                lng: 9.5404
+            },
+            4: {
+                title: 'Food Festival Sardo',
+                category: 'Gastronomia',
+                date: '5 Agosto 2024',
+                location: 'Alghero',
+                image: 'https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900',
+                description: 'Assapora i sapori autentici della Sardegna al Food Festival di Alghero! Scopri le specialità culinarie tradizionali e moderne preparate dai migliori chef regionali. Dalle paste tipiche sarde ai frutti di mare freschi, dai vini locali ai dolci tradizionali: un\'esperienza gastronomica che non dimenticherai.',
+                time: '18:00 - 23:00',
+                capacity: '3000+ persone',
+                lat: 40.5544,
+                lng: 8.3160
+            }
+        };
+
+        // Funzione per caricare i dati dell'evento
+        function loadEventDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id') || 1;
+            const event = eventsData[eventId];
+
+            if (event) {
+                // Aggiorna il titolo della pagina
+                document.title = `${event.title} - Events InfoSardinya`;
+
+                // Aggiorna breadcrumb
+                document.getElementById('breadcrumb-event').textContent = event.title;
+
+                // Aggiorna hero
+                document.getElementById('event-badge').textContent = event.category;
+                document.getElementById('event-title').textContent = event.title;
+                document.getElementById('hero-date').textContent = event.date;
+                document.getElementById('hero-location').textContent = event.location;
+                document.getElementById('hero-category').textContent = event.category;
+
+                // Aggiorna immagine e descrizione
+                document.getElementById('event-image').src = event.image;
+                document.getElementById('event-description').textContent = event.description;
+
+                // Aggiorna sidebar
+                document.getElementById('sidebar-date').textContent = event.date;
+                document.getElementById('sidebar-time').textContent = event.time;
+                document.getElementById('sidebar-location').textContent = event.location;
+                document.getElementById('sidebar-capacity').textContent = event.capacity;
+
+                // Aggiorna colore hero in base alla categoria
+                const heroSection = document.getElementById('event-hero');
+                const categoryColors = {
+                    'Musica': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                    'Arte': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                    'Sport': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                    'Gastronomia': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
+                };
+                const bgImage = categoryColors[event.category] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
+                heroSection.style.backgroundImage = `linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%), ${bgImage}`;
+            }
+        }
+
+        // Variabile globale per la mappa
+        let map = null;
+        let currentMarker = null;
+
+        // Funzione per inizializzare e aggiornare la mappa
+        function initializeMap(lat, lng, locationName) {
+            // Se la mappa esiste, rimuovila
+            if (map) {
+                map.remove();
+            }
+
+            // Crea una nuova mappa con z-index appropriato
+            map = L.map('event-map', {
+                zoomControl: true
+            }).setView([lat, lng], 13);
+
+            // Aggiungi OpenStreetMap tiles con referrerPolicy valido
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19,
+                referrerPolicy: 'unsafe-url'
+            }).addTo(map);
+
+            // Rimuovi il marker precedente se esiste
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            // Aggiungi un nuovo marker
+            currentMarker = L.marker([lat, lng]).addTo(map)
+                .bindPopup(`<strong>${locationName}</strong><br>Evento in corso`)
+                .openPopup();
+
+            // Aggiorna il nome della città nella sezione mappa
+            document.getElementById('map-city').textContent = locationName;
+        }
+
+        // Carica i dati quando la pagina è pronta
+        document.addEventListener('DOMContentLoaded', function() {
+            loadEventDetails();
+
+            // Inizializza la mappa dopo il caricamento dei dati
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id') || 1;
+            const event = eventsData[eventId];
+
+            if (event) {
+                // Aggiungi un piccolo delay per assicurarti che il DOM sia pronto
+                setTimeout(() => {
+                    initializeMap(event.lat, event.lng, event.location);
+                }, 100);
+            }
+        });
+    </script>
+
+</body>
+</html>

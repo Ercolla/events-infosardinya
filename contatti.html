@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contatti - Events InfoSardinya</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero Section */
+        .page-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.8) 0%, rgba(0, 95, 163, 0.8) 100%),
+                        url('https://images.pexels.com/photos/3831681/pexels-photo-3831681.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .page-hero-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0;
+        }
+
+        /* Sezione Contenuto */
+        .contact-section {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--color-sardegna-blue);
+            border-radius: 2px;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        /* Info Cards */
+        .info-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9f9f9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-sardegna-blue);
+        }
+
+        .info-card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card-content {
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .info-card-link {
+            color: var(--color-sardegna-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .info-card-link:hover {
+            color: #005fa3;
+        }
+
+        /* Form */
+        .contact-form {
+            background: linear-gradient(135deg, var(--color-sardegna-sand) 0%, #f0e0cd 100%);
+            padding: 2.5rem;
+            border-radius: 12px;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--color-sardegna-blue);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-submit {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <h1>Contattaci</h1>
+            <p>Abbiamo domande? Ti aiutiamo volentieri!</p>
+        </div>
+    </section>
+
+    <!-- Sezione Contatti -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <!-- Informazioni di Contatto -->
+            <div class="info-cards">
+                <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem; margin-top: 0;">Come Raggiungerci</h2>
+
+                <div class="info-card">
+                    <div class="info-card-icon">📍</div>
+                    <h3 class="info-card-title">Indirizzo</h3>
+                    <p class="info-card-content">
+                        Events InfoSardinya<br>
+                        Via della Repubblica, 123<br>
+                        09100 Cagliari (CA)<br>
+                        Sardegna, Italia
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-icon">📞</div>
+                    <h3 class="info-card-title">Telefono</h3>
+                    <p class="info-card-content">
+                        <a href="tel:+390704567890" class="info-card-link">+39 070 456 7890</a><br>
+                        <span style="color: var(--color-text); font-size: 0.9rem;">Lunedì-Venerdì: 09:00 - 18:00</span>
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-icon">✉️</div>
+                    <h3 class="info-card-title">Email</h3>
+                    <p class="info-card-content">
+                        <a href="mailto:info@eventsinfosardinya.it" class="info-card-link">info@eventsinfosardinya.it</a><br>
+                        <a href="mailto:support@eventsinfosardinya.it" class="info-card-link">support@eventsinfosardinya.it</a>
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-card-icon">🌐</div>
+                    <h3 class="info-card-title">Social Media</h3>
+                    <p class="info-card-content">
+                        <a href="#" class="info-card-link">Facebook</a> •
+                        <a href="#" class="info-card-link">Instagram</a> •
+                        <a href="#" class="info-card-link">Twitter</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Modulo di Contatto -->
+            <div class="contact-form">
+                <h3 class="form-title">Scrivici un Messaggio</h3>
+
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label class="form-label">Nome Completo *</label>
+                        <input type="text" class="form-input" placeholder="Il tuo nome" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email *</label>
+                        <input type="email" class="form-input" placeholder="La tua email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Oggetto *</label>
+                        <input type="text" class="form-input" placeholder="Oggetto del messaggio" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Messaggio *</label>
+                        <textarea class="form-textarea" placeholder="Scrivi il tuo messaggio qui..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="form-submit">Invia Messaggio</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

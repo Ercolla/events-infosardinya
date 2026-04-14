@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luoghi e Città - Events InfoSardinya</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+    <script src="events-data.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero Section */
+        .page-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.8) 0%, rgba(0, 95, 163, 0.8) 100%),
+                        url('https://images.pexels.com/photos/3469410/pexels-photo-3469410.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .page-hero-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0;
+        }
+
+        /* Sezione Contenuto */
+        .locations-content-section {
+            background: #f9f9f9;
+            padding: 3rem 1rem;
+            min-height: 60vh;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--color-sardegna-blue);
+            border-radius: 2px;
+        }
+
+        /* Locations Grid - Identico a eventi.html */
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .location-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .location-card:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+        }
+
+        .location-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--color-sardegna-blue) 0%, #005fa3 100%);
+        }
+
+        .location-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .location-category {
+            color: var(--color-accent-red);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .location-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .location-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            color: var(--color-text);
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .location-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location-cta {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .location-cta:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+            .locations-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <h1>Scopri i Luoghi</h1>
+            <p>Esplora le città della Sardegna e gli eventi che si svolgono in ogni luogo meraviglioso</p>
+        </div>
+    </section>
+
+    <!-- Sezione Luoghi -->
+    <section class="locations-content-section">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="section-title">Le Città della Sardegna</h2>
+
+            <div class="locations-grid" id="locations-container">
+                <!-- Cagliari -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=cagliari'">
+                    <img src="https://images.pexels.com/photos/3050181/pexels-photo-3050181.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Cagliari" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Capitale della Sardegna</div>
+                        <h3 class="location-title">Cagliari</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">🎭 Cultura e musica</div>
+                            <div class="location-info-item">🌊 Sul mare</div>
+                            <div class="location-info-item">12+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+
+                <!-- Sassari -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=sassari'">
+                    <img src="https://images.pexels.com/photos/3559284/pexels-photo-3559284.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Sassari" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Nord della Sardegna</div>
+                        <h3 class="location-title">Sassari</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">🎨 Città d'arte</div>
+                            <div class="location-info-item">📚 Storia e cultura</div>
+                            <div class="location-info-item">8+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+
+                <!-- Alghero -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=alghero'">
+                    <img src="https://images.pexels.com/photos/3789101/pexels-photo-3789101.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Alghero" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Nord-ovest</div>
+                        <h3 class="location-title">Alghero</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">🏖️ Spiagge bellissime</div>
+                            <div class="location-info-item">🎵 Musica estiva</div>
+                            <div class="location-info-item">10+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+
+                <!-- Olbia -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=olbia'">
+                    <img src="https://images.pexels.com/photos/3789140/pexels-photo-3789140.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Olbia" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Costa Smeralda</div>
+                        <h3 class="location-title">Olbia</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">⛱️ Porto principale</div>
+                            <div class="location-info-item">🎉 Intrattenimento</div>
+                            <div class="location-info-item">15+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+
+                <!-- Porto Cervo -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=porto-cervo'">
+                    <img src="https://images.pexels.com/photos/3789100/pexels-photo-3789100.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Porto Cervo" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Costa Smeralda</div>
+                        <h3 class="location-title">Porto Cervo</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">💎 Lusso esclusivo</div>
+                            <div class="location-info-item">🌟 Spettacoli premium</div>
+                            <div class="location-info-item">9+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+
+                <!-- Nuoro -->
+                <div class="location-card" onclick="window.location.href='eventi.html?city=nuoro'">
+                    <img src="https://images.pexels.com/photos/3789139/pexels-photo-3789139.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Nuoro" class="location-image">
+                    <div class="location-body">
+                        <div class="location-category">📍 Centro della Sardegna</div>
+                        <h3 class="location-title">Nuoro</h3>
+                        <div class="location-info">
+                            <div class="location-info-item">🎪 Tradizioni folcloriche</div>
+                            <div class="location-info-item">🎭 Spettacoli culturali</div>
+                            <div class="location-info-item">7+ eventi</div>
+                        </div>
+                        <div class="location-cta">Vedi gli Eventi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

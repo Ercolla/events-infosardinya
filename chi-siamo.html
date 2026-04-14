@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Siamo - Events InfoSardinya</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero Section */
+        .page-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.8) 0%, rgba(0, 95, 163, 0.8) 100%),
+                        url('https://images.pexels.com/photos/3852571/pexels-photo-3852571.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .page-hero-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0;
+        }
+
+        /* Sezione Contenuto */
+        .content-section {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--color-sardegna-blue);
+            border-radius: 2px;
+        }
+
+        .about-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .about-text {
+            color: var(--color-text);
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
+            text-align: justify;
+        }
+
+        /* Cards Valori */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .value-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9f9f9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-sardegna-blue);
+            transition: all 0.3s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 119, 182, 0.1);
+        }
+
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .value-desc {
+            font-size: 0.95rem;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+            .about-text {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <h1>Chi Siamo</h1>
+            <p>La tua guida definitiva agli eventi più incredibili della Sardegna</p>
+        </div>
+    </section>
+
+    <!-- Sezione Contenuto -->
+    <section class="content-section">
+        <div class="about-container">
+            <h2 class="section-title">La Nostra Storia</h2>
+
+            <p class="about-text">
+                Events InfoSardinya nasce dalla passione per la Sardegna e per gli eventi che la rendono viva. Siamo un team di appassionati che credono che ogni persona meriti di scoprire i momenti più emozionanti e indimenticabili che la nostra isola ha da offrire.
+            </p>
+
+            <p class="about-text">
+                La nostra missione è semplice: renderti la vita più facile nel trovare l'evento perfetto per ogni occasione. Che tu stia cercando un concerto live, una mostra d'arte, una competizione sportiva o un festival culinario, Events InfoSardinya è il tuo alleato di fiducia.
+            </p>
+
+            <p class="about-text">
+                Crediamo nel potere della comunità e nel valore di condividere momenti speciali. Ecco perché abbiamo creato una piattaforma che non è solo un elenco di eventi, ma uno spazio dove la cultura, l'intrattenimento e l'esperienza si incontrano per creare ricordi indimenticabili.
+            </p>
+
+            <!-- I Nostri Valori -->
+            <div style="margin-top: 4rem;">
+                <h2 class="section-title">I Nostri Valori</h2>
+
+                <div class="values-grid">
+                    <div class="value-card">
+                        <div class="value-icon">🎯</div>
+                        <h3 class="value-title">Affidabilità</h3>
+                        <p class="value-desc">
+                            Ogni evento è verificato e controllato. Puoi fidarti delle informazioni che troverai su Events InfoSardinya.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">💡</div>
+                        <h3 class="value-title">Innovazione</h3>
+                        <p class="value-desc">
+                            Continuiamo a evolverci per offrirti la migliore esperienza possibile nella ricerca e nella scoperta di eventi.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">❤️</div>
+                        <h3 class="value-title">Passione</h3>
+                        <p class="value-desc">
+                            Amiamo quello che facciamo e lo si vede in ogni dettaglio della nostra piattaforma e dei nostri servizi.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🌟</div>
+                        <h3 class="value-title">Qualità</h3>
+                        <p class="value-desc">
+                            Selezioniamo solo gli eventi di qualità per garantire che ogni tua esperienza sia memorabile.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">👥</div>
+                        <h3 class="value-title">Comunità</h3>
+                        <p class="value-desc">
+                            Crediamo nel potere della comunità e nel condividere esperienze con altre persone appassionate.
+                        </p>
+                    </div>
+
+                    <div class="value-card">
+                        <div class="value-icon">🏝️</div>
+                        <h3 class="value-title">Sardegna</h3>
+                        <p class="value-desc">
+                            Amiamo la nostra isola e vogliamo mostrarla al mondo attraverso i suoi meravigliosi eventi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

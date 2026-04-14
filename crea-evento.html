@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Evento - Events InfoSardinya</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --color-primary: #151515;
+            --color-accent-red: #FF2122;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-primary);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 0.375rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-accent-red);
+            box-shadow: 0 0 0 3px rgba(255, 33, 34, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .submit-btn {
+            padding: 1rem;
+            background: var(--color-accent-red);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #e01f20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 33, 34, 0.3);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+        }
+
+        .alert-success {
+            background: #efe;
+            border: 1px solid #cfc;
+            color: #0a0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="site-navbar"></div>
+
+    <script>
+        // Guard: redirect se non autenticato
+        authRequireLogin('login.html?redirect=crea-evento.html');
+    </script>
+
+    <!-- PAGE CONTENT -->
+    <section class="py-12 md:py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <div class="bg-white rounded-lg shadow-lg p-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Pubblica un Evento</h1>
+                <p class="text-lg text-gray-600 mb-8">Condividi il tuo evento con la comunità di Events InfoSardinya</p>
+
+                <!-- Messaggi di feedback -->
+                <div id="error-msg" class="hidden alert alert-error"></div>
+                <div id="success-msg" class="hidden alert alert-success"></div>
+
+                <!-- Form -->
+                <form id="form-crea-evento">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="form-label">Titolo evento *</label>
+                            <input type="text" id="titolo" name="titolo" required
+                                   class="form-input" placeholder="Es. Festival Jazz 2026">
+                        </div>
+                        <div>
+                            <label class="form-label">Categoria *</label>
+                            <select id="categoria" name="categoria" required class="form-select">
+                                <option value="">-- Seleziona una categoria --</option>
+                                <option value="musica">Musica</option>
+                                <option value="arte">Arte e Cultura</option>
+                                <option value="sport">Sport</option>
+                                <option value="gastronomia">Gastronomia</option>
+                                <option value="tradizione">Tradizioni</option>
+                                <option value="famiglia">Famiglia</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="form-label">Data inizio *</label>
+                            <input type="date" id="dataInizio" name="dataInizio" required class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Data fine</label>
+                            <input type="date" id="dataFine" name="dataFine" class="form-input">
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label">Location / Luogo *</label>
+                        <input type="text" id="location" name="location" required
+                               class="form-input" placeholder="Es. Piazza Yenne, Cagliari">
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="form-label">Descrizione *</label>
+                        <textarea id="descrizione" name="descrizione" required
+                                  class="form-textarea" placeholder="Descrivi l'evento in dettaglio..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="form-label">URL Immagine</label>
+                            <input type="url" id="immagineUrl" name="immagineUrl"
+                                   class="form-input" placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div>
+                            <label class="form-label">Prezzo (€)</label>
+                            <input type="number" id="prezzo" name="prezzo" min="0" step="0.01"
+                                   class="form-input" placeholder="0.00">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full submit-btn">Pubblica Evento</button>
+
+                </form>
+
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <p class="text-sm text-gray-600">
+                        <strong>Info:</strong> Una volta pubblicato, il tuo evento sarà visibile in Sardegna e tutti potranno scoprirlo.
+                        Assicurati che i dati siano corretti prima di pubblicare.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        document.getElementById('form-crea-evento').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const dati = {
+                titolo: document.getElementById('titolo').value.trim(),
+                dataInizio: document.getElementById('dataInizio').value,
+                dataFine: document.getElementById('dataFine').value,
+                location: document.getElementById('location').value.trim(),
+                categoria: document.getElementById('categoria').value,
+                descrizione: document.getElementById('descrizione').value.trim(),
+                immagineUrl: document.getElementById('immagineUrl').value.trim(),
+                prezzo: document.getElementById('prezzo').value || '0.00'
+            };
+
+            const errorDiv = document.getElementById('error-msg');
+            const successDiv = document.getElementById('success-msg');
+
+            // Validazione
+            if (!dati.titolo || !dati.dataInizio || !dati.location || !dati.categoria || !dati.descrizione) {
+                errorDiv.textContent = 'Compila tutti i campi obbligatori (contrassegnati con *)';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Se dataFine non è compilata, usa la dataInizio
+            if (!dati.dataFine) {
+                dati.dataFine = dati.dataInizio;
+            }
+
+            // Crea evento
+            const result = eventiCreate(dati);
+
+            if (result.ok) {
+                successDiv.textContent = '✓ Evento pubblicato con successo! Stai per essere reindirizzato...';
+                successDiv.classList.remove('hidden');
+                errorDiv.classList.add('hidden');
+                setTimeout(() => {
+                    window.location.href = 'miei-eventi.html?created=1';
+                }, 2000);
+            } else {
+                errorDiv.textContent = 'Errore: ' + result.error;
+                errorDiv.classList.remove('hidden');
+                successDiv.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>

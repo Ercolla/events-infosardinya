@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorie - Events InfoSardinya</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+    <script src="events-data.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero Section */
+        .page-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.8) 0%, rgba(0, 95, 163, 0.8) 100%),
+                        url('https://images.pexels.com/photos/3757938/pexels-photo-3757938.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=1920');
+            background-size: cover;
+            background-position: center;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+        .page-hero-content {
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .page-hero h1 {
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-hero p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0;
+        }
+
+        /* Contenuto Categorie */
+        .categories-content {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--color-sardegna-blue);
+            border-radius: 2px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .category-card-large {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9f9f9 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-card-large:hover {
+            border-color: var(--color-sardegna-blue);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 119, 182, 0.15);
+        }
+
+        .category-card-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .category-card-content {
+            padding: 2rem;
+        }
+
+        .category-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .category-card-desc {
+            color: var(--color-text);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-card-btn {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .category-card-btn:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-hero h1 {
+                font-size: 2rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- Hero Section -->
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <h1>Esplora le Categorie</h1>
+            <p>Scegli la categoria che ti affascina di più e scopri tutti gli eventi</p>
+        </div>
+    </section>
+
+    <!-- Contenuto Categorie -->
+    <section class="categories-content">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title">Le Nostre Categorie</h2>
+
+            <div class="categories-grid">
+                <!-- Musica -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Musica" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">🎵</div>
+                        <h3 class="category-card-title">Musica</h3>
+                        <p class="category-card-desc">
+                            Concerti dal vivo, festival musicali e DJ set. Dall'indie rock al reggae, dalla musica classica all'elettronica, troverai tutto quello che ami.
+                        </p>
+                        <a href="eventi.html?filter=musica" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+
+                <!-- Arte -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Arte" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">🎨</div>
+                        <h3 class="category-card-title">Arte e Cultura</h3>
+                        <p class="category-card-desc">
+                            Mostre d'arte, esposizioni fotografiche, installazioni contemporanee e tanto altro. Scopri il lato creativo della Sardegna.
+                        </p>
+                        <a href="eventi.html?filter=arte" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+
+                <!-- Sport -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Sport" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">⚽</div>
+                        <h3 class="category-card-title">Sport</h3>
+                        <p class="category-card-desc">
+                            Tornei, competizioni, attività all'aperto e sport insoliti. Vivi l'adrenalina dello sport sardo in tutta la sua bellezza.
+                        </p>
+                        <a href="eventi.html?filter=sport" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+
+                <!-- Gastronomia -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Gastronomia" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">🍽️</div>
+                        <h3 class="category-card-title">Gastronomia</h3>
+                        <p class="category-card-desc">
+                            Degustazioni, festival culinari e cene speciali. Assapora i sapori autentico della Sardegna in occasioni indimenticabili.
+                        </p>
+                        <a href="eventi.html?filter=gastronomia" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+
+                <!-- Teatro -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Teatro" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">🎭</div>
+                        <h3 class="category-card-title">Teatro e Spettacoli</h3>
+                        <p class="category-card-desc">
+                            Rappresentazioni teatrali, commedie e spettacoli dal vivo. Vivi l'emozione del teatro sardo in tutte le sue forme.
+                        </p>
+                        <a href="eventi.html?filter=teatro" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+
+                <!-- Bambini -->
+                <div class="category-card-large">
+                    <img src="https://images.pexels.com/photos/2827392/pexels-photo-2827392.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600" alt="Bambini" class="category-card-image">
+                    <div class="category-card-content">
+                        <div class="category-card-icon">👶</div>
+                        <h3 class="category-card-title">Bambini e Famiglia</h3>
+                        <p class="category-card-desc">
+                            Eventi pensati per i più piccoli e per tutta la famiglia. Divertimento, educazione e momenti speciali da condividere insieme.
+                        </p>
+                        <a href="eventi.html?filter=famiglia" class="category-card-btn">Visualizza Tutti</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

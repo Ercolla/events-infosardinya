@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events InfoSardinya - Scopri gli eventi in Sardegna</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+    <script src="events-data.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero Section con Parallax */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.75) 0%, rgba(0, 95, 163, 0.75) 100%),
+                        url('https://images.pexels.com/photos/3970375/pexels-photo-3970375.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1080&w=1920');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg-accent {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(249, 178, 51, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .hero-title {
+            font-size: clamp(2rem, 8vw, 4rem);
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-direction: column;
+            sm:flex-direction: row;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: var(--color-sardegna-yellow);
+            color: var(--color-primary);
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: 2px solid var(--color-sardegna-yellow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 178, 51, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: var(--color-sardegna-blue);
+            transform: translateY(-2px);
+        }
+
+        /* Sezione Categorie */
+        .categories-section {
+            padding: 4rem 1rem;
+            background: white;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .category-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #f9f9f9 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .category-card:hover {
+            border-color: var(--color-sardegna-blue);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 119, 182, 0.15);
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .category-desc {
+            font-size: 0.9rem;
+            color: var(--color-text);
+            margin-bottom: 1rem;
+        }
+
+        /* Sezione Highlight Eventos */
+        .highlight-section {
+            background: linear-gradient(135deg, var(--color-sardegna-sand) 0%, #f0e0cd 100%);
+            padding: 4rem 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: var(--color-primary);
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--color-sardegna-blue);
+            border-radius: 2px;
+        }
+
+        .events-highlight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1200px) {
+            .events-highlight-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .event-highlight-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .event-highlight-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .event-image-wrapper {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--color-sardegna-blue) 0%, #005fa3 100%);
+        }
+
+        .event-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .event-badge-top {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--color-sardegna-yellow);
+            color: var(--color-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .event-content-highlight {
+            padding: 1.5rem;
+        }
+
+        .event-category {
+            color: var(--color-accent-red);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+        }
+
+        .event-title-highlight {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--color-text);
+        }
+
+        .event-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .discover-btn {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .discover-btn:hover {
+            background: #005fa3;
+            transform: translateY(-2px);
+        }
+
+        /* Sezione CTA */
+        .cta-section {
+            background: linear-gradient(135deg, var(--color-sardegna-blue) 0%, #005fa3 100%);
+            padding: 4rem 1rem;
+            color: white;
+            text-align: center;
+        }
+
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: clamp(1.75rem, 5vw, 2.5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+
+            .section-title {
+                margin-bottom: 2rem;
+            }
+
+            .events-highlight-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Navbar -->
+    <div id="site-navbar"></div>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero-section">
+        <div class="hero-bg-accent"></div>
+
+        <div class="hero-content">
+            <div class="hero-badge">
+                ✨ Scopri gli eventi più hot della Sardegna
+            </div>
+
+            <h1 class="hero-title">
+                Vivi Momenti Indimenticabili
+            </h1>
+
+            <p class="hero-subtitle">
+                Concerti, festival, mostre e molto altro. Trova l'evento perfetto per ogni occasione e vivi la Sardegna come mai prima d'ora.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="eventi.html" class="btn-primary">
+                    Esplora gli Eventi
+                </a>
+                <a href="categorie.html" class="btn-secondary">
+                    Scopri le Categorie
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SEZIONE CATEGORIE ===== -->
+    <section class="categories-section">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="section-title">Cosa Stai Cercando?</h2>
+
+            <div class="category-grid">
+                <!-- Musica -->
+                <div class="category-card">
+                    <div class="category-icon">🎵</div>
+                    <h3 class="category-title">Musica</h3>
+                    <p class="category-desc">Concerti dal vivo, DJ set e festival musicali</p>
+                    <a href="categorie.html?filter=musica" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Scopri di più →</a>
+                </div>
+
+                <!-- Arte -->
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3 class="category-title">Arte e Cultura</h3>
+                    <p class="category-desc">Mostre, esposizioni e eventi culturali</p>
+                    <a href="categorie.html?filter=arte" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Scopri di più →</a>
+                </div>
+
+                <!-- Sport -->
+                <div class="category-card">
+                    <div class="category-icon">⚽</div>
+                    <h3 class="category-title">Sport</h3>
+                    <p class="category-desc">Competizioni, tornei e attività all'aperto</p>
+                    <a href="categorie.html?filter=sport" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Scopri di più →</a>
+                </div>
+
+                <!-- Food -->
+                <div class="category-card">
+                    <div class="category-icon">🍽️</div>
+                    <h3 class="category-title">Gastronomia</h3>
+                    <p class="category-desc">Degustazioni, cene speciali e food fest</p>
+                    <a href="categorie.html?filter=gastronomia" class="text-sm font-semibold text-blue-600 hover:text-blue-800">Scopri di più →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SEZIONE EVENTI IN EVIDENZA ===== -->
+    <section class="highlight-section">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="section-title">Trending Ora</h2>
+
+            <div class="events-highlight-grid">
+                <!-- Evento 1 -->
+                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=1'" style="cursor: pointer;">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Festival" class="event-image">
+                        <span class="event-badge-top">In Evidenza</span>
+                    </div>
+                    <div class="event-content-highlight">
+                        <div class="event-category">Musica</div>
+                        <h3 class="event-title-highlight">Festival del Sole</h3>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                📅 20 Maggio 2024
+                            </div>
+                            <div class="event-meta-item">
+                                📍 Cagliari
+                            </div>
+                        </div>
+                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
+                    </div>
+                </div>
+
+                <!-- Evento 2 -->
+                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=2'" style="cursor: pointer;">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Mostra" class="event-image">
+                        <span class="event-badge-top">Nuovo</span>
+                    </div>
+                    <div class="event-content-highlight">
+                        <div class="event-category">Arte</div>
+                        <h3 class="event-title-highlight">Mostra d'Arte Contemporanea</h3>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                📅 15 Giugno 2024
+                            </div>
+                            <div class="event-meta-item">
+                                📍 Sassari
+                            </div>
+                        </div>
+                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
+                    </div>
+                </div>
+
+                <!-- Evento 3 -->
+                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=3'" style="cursor: pointer;">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Beach Event" class="event-image">
+                        <span class="event-badge-top">Top Pick</span>
+                    </div>
+                    <div class="event-content-highlight">
+                        <div class="event-category">Sport</div>
+                        <h3 class="event-title-highlight">Torneo Beach Volley</h3>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                📅 25 Luglio 2024
+                            </div>
+                            <div class="event-meta-item">
+                                📍 Porto Cervo
+                            </div>
+                        </div>
+                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
+                    </div>
+                </div>
+
+                <!-- Evento 4 -->
+                <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=4'" style="cursor: pointer;">
+                    <div class="event-image-wrapper">
+                        <img src="https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Food Festival" class="event-image">
+                        <span class="event-badge-top">Popolare</span>
+                    </div>
+                    <div class="event-content-highlight">
+                        <div class="event-category">Gastronomia</div>
+                        <h3 class="event-title-highlight">Food Festival Sardo</h3>
+                        <div class="event-meta">
+                            <div class="event-meta-item">
+                                📅 5 Agosto 2024
+                            </div>
+                            <div class="event-meta-item">
+                                📍 Alghero
+                            </div>
+                        </div>
+                        <div class="discover-btn" style="cursor: pointer;">Scopri di Più</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SEZIONE CTA ===== -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Non Perderti Nessun Evento</h2>
+            <p class="cta-text">
+                Iscriviti alla nostra newsletter e ricevi le notifiche degli eventi più interessanti direttamente nella tua casella di posta.
+            </p>
+            <div style="display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto;">
+                <input
+                    type="email"
+                    placeholder="La tua email..."
+                    style="flex: 1; padding: 0.875rem 1rem; border: none; border-radius: 6px; font-size: 0.95rem;"
+                >
+                <button style="background: var(--color-sardegna-yellow); color: var(--color-primary); padding: 0.875rem 2rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Iscriviti
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- About -->
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <!-- Menu -->
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <!-- Categorie -->
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=musica">Musica</a></li>
+                    <li><a href="categorie.html?filter=arte">Arte</a></li>
+                    <li><a href="categorie.html?filter=sport">Sport</a></li>
+                    <li><a href="categorie.html?filter=gastronomia">Gastronomia</a></li>
+                </ul>
+            </div>
+
+            <!-- Legale -->
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

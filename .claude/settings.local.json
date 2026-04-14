@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:events.infosardinya.it)",
+      "WebFetch(domain:www.sardegnaturismo.it)",
+      "Bash(cat)",
+      "Bash(chmod +x /tmp/download_images.sh)",
+      "Bash(bash /tmp/download_images.sh)",
+      "Bash(bash /tmp/download_pexels.sh)",
+      "Bash(bash /tmp/replace_all_urls.sh)",
+      "Bash(grep -E \"\\\\.\\(jpg|jpeg|png\\)$\")",
+      "Bash(cd C:\\\\\\\\eventsIinfosardinyaIt_CLAUDCODEMAX)",
+      "Bash(python -m http.server 5500)",
+      "Bash(curl -s http://127.0.0.1:5500/index.html)",
+      "Skill(update-config)",
+      "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)",
+      "Bash(grep -r \"referrer\" /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)"
+    ]
+  }
+}

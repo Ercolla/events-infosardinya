@@ -355,9 +355,14 @@
 
         // Funzione per filtrare gli eventi
         function applyFilters() {
+            const catFilter = (currentCategoryFilter || '').trim().toLowerCase();
+            const cityFilter = (currentCityFilter || '').trim().toLowerCase();
             filteredEvents = allEvents.filter(event => {
-                const categoryMatch = currentCategoryFilter === 'all' || (event.badge_text || '').toLowerCase() === currentCategoryFilter;
-                const cityMatch = currentCityFilter === 'all' || event.location.toLowerCase() === currentCityFilter;
+                // Confronto case-insensitive su badge_text, tollerante a emoji/spazi
+                const badge = (event.badge_text || '').trim().toLowerCase();
+                const categoryMatch = catFilter === 'all' || badge === catFilter || badge.includes(catFilter);
+                const loc = (event.location || '').trim().toLowerCase();
+                const cityMatch = cityFilter === 'all' || loc === cityFilter || loc.includes(cityFilter);
                 return categoryMatch && cityMatch;
             });
             renderEvents(filteredEvents);

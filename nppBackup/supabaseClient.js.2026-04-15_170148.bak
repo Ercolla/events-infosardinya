@@ -1,5 +1,5 @@
 // Configurazione Supabase
-const SUPABASE_URL = 'https://jugdaypvqpvwvtfgrsqh.supabase.co'; 
+const SUPABASE_URL = 'https://jugdaypvqpvwvtfgrsqh.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QKqJwR40B4tVqyonvEgspw_sm2i_DfS';
 
 // Inizializza Supabase (la libreria è caricata dal CDN come window.supabase)

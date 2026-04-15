@@ -15,7 +15,8 @@
       "Skill(update-config)",
       "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)",
       "Bash(grep -r \"referrer\" /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)",
-      "WebFetch(domain:www.eventiinsardegna.it)"
+      "WebFetch(domain:www.eventiinsardegna.it)",
+      "Bash(grep:*)"
     ]
   }
 }

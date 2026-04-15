@@ -609,11 +609,11 @@
                     document.getElementById('breadcrumb-event').textContent = event.title;
 
                     // Aggiorna hero
-                    document.getElementById('event-badge').textContent = event.category;
+                    document.getElementById('event-badge').textContent = event.badge_text || '';
                     document.getElementById('event-title').textContent = event.title;
                     document.getElementById('hero-date').textContent = event.date;
                     document.getElementById('hero-location').textContent = event.location;
-                    document.getElementById('hero-category').textContent = event.category;
+                    document.getElementById('hero-category').textContent = event.badge_text || '';
 
                     // Aggiorna immagine e descrizione
                     document.getElementById('event-image').src = event.image || 'https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=900';
@@ -633,7 +633,7 @@
                         'Sport': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
                         'Gastronomia': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
                     };
-                    const bgImage = categoryColors[event.category] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
+                    const bgImage = categoryColors[event.badge_text] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
                     heroSection.style.backgroundImage = `linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%), ${bgImage}`;
 
                     // Inizializza la mappa se ci sono coordinate

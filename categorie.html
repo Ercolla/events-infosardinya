@@ -375,7 +375,7 @@
                 <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%;">
                     <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" style="width: 100%; height: 220px; object-fit: cover;">
                     <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
-                        <div style="color: #FF2122; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">${event.category}</div>
+                        <div style="color: #FF2122; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">${event.badge_text || ''}</div>
                         <h3 style="font-size: 1.125rem; font-weight: 700; color: #151515; margin-bottom: 0.75rem; line-height: 1.4; flex-grow: 1;">${event.title}</h3>
                         <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: #686868; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">📅 ${event.date}</div>

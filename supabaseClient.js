@@ -3,12 +3,13 @@ const SUPABASE_URL = 'https://jugdaypvqpvwvtfgrsqh.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_QKqJwR40B4tVqyonvEgspw_sm2i_DfS';
 
 // Inizializza Supabase (la libreria è caricata dal CDN come window.supabase)
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Rinominato per evitare conflitto con window.supabase del CDN
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Funzione per ottenere tutti gli eventi
 async function getAllEvents() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('events')
             .select('*')
             .order('date', { ascending: true });
@@ -28,7 +29,7 @@ async function getAllEvents() {
 // Funzione per ottenere un evento specifico
 async function getEventById(id) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('events')
             .select('*')
             .eq('id', id)
@@ -49,7 +50,7 @@ async function getEventById(id) {
 // Funzione per ottenere eventi per categoria
 async function getEventsByCategory(category) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('events')
             .select('*')
             .eq('category', category)
@@ -70,7 +71,7 @@ async function getEventsByCategory(category) {
 // Funzione per ottenere eventi per città
 async function getEventsByCity(city) {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('events')
             .select('*')
             .eq('location', city)

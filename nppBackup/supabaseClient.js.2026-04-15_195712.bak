@@ -1,6 +1,6 @@
 // Configurazione Supabase
-const SUPABASE_URL = 'https://jugdaypvqvpwvtfgrsqh.supabase.co'; 
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Z2RheXB2cXZwd3Z0Zmdyc3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE5NzUsImV4cCI6MjA5MTY0Nzk3NX0.W3Yd3C5649sNyW_G2W_iQ7l9iYSUfflga7FwUbTf33c';
+const SUPABASE_URL = 'https://jugdaypvqpvwvtfgrsqh.supabase.co'; 
+const SUPABASE_ANON_KEY = 'sb_publishable_QKqJwR40B4tVqyonvEgspw_sm2i_DfS';
 
 // Inizializza Supabase (la libreria è caricata dal CDN come window.supabase)
 // Rinominato per evitare conflitto con window.supabase del CDN

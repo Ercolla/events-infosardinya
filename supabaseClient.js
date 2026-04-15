@@ -53,7 +53,7 @@ async function getEventsByCategory(category) {
         const { data, error } = await supabaseClient
             .from('events')
             .select('*')
-            .eq('category', category)
+            .eq('badge_text', category)
             .order('date', { ascending: true });
 
         if (error) {

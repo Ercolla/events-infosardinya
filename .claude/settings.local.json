@@ -14,7 +14,8 @@
       "Bash(curl -s http://127.0.0.1:5500/index.html)",
       "Skill(update-config)",
       "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)",
-      "Bash(grep -r \"referrer\" /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)"
+      "Bash(grep -r \"referrer\" /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.html)",
+      "WebFetch(domain:www.eventiinsardegna.it)"
     ]
   }
 }

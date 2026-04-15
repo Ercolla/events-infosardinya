@@ -91,7 +91,7 @@ Elenca qui le funzionalità da completare o i file su cui si sta lavorando.
 # Da completare:
 - Pagina "Chi siamo"
 - Sistema di categorie/tag per gli articoli categorie.html
-- Pagina eventi eventi.html usare supabase (per popolare gli eventi estrapolare i contenuti da questo link https://www.eventiinsardegna.it/)
+- Pagina eventi eventi.html (eventi da popolare)
 - Pagina luoghi luoghi.html (usare la cartella IMG per le immagini)
 - Ottimizzazione SEO (meta tag dinamici)
 - Pagina contatti con form di contatto contatti.html

@@ -9,6 +9,7 @@ Il sito deve essere il punto di riferimento per gli eventi in Sardegna. Deve ess
 Repository su GitHub. Il progetto è parzialmente completato — molte parti funzionano già e non devono essere toccate.
 
 Stack tecnico
+Layer Tecnologia
 Layer:Framework  Tecnologia:Next.js (Pages Router)
 Layer:Linguaggio  Tecnologia:JavaScript
 Layer:Database Tecnologia:Supabase (PostgreSQL)
@@ -85,47 +86,47 @@ tailwind.config.js                    # Configurazione Tailwind — stabile
 
 Elenca qui le funzionalità da completare o i file su cui si sta lavorando.
 
-# Completato:
-- Homepage index.html
+# Esempi — sostituisci con lo stato reale:
 
 # Da completare:
-- Pagina "Chi siamo"
-- Sistema di categorie/tag per gli articoli categorie.html
-- Pagina eventi eventi.html usare supabase (per popolare gli eventi estrapolare i contenuti da questo link https://www.eventiinsardegna.it/)
-- Pagina luoghi luoghi.html (usare la cartella IMG per le immagini)
-- Ottimizzazione SEO (meta tag dinamici)
-- Pagina contatti con form di contatto contatti.html
-- Ricerca articoli
-- Autenticazione utente (creazione account) 
-
-# Completata:
-
-- Pagina CHI SIAMO chi-siamo.html
-
-# durante la fase finale :
+- [ ] Pagina "Chi siamo"
+- [ ] Sistema di categorie/tag per gli articoli
+- [ ] Paginazione lista blog
+- [ ] Ottimizzazione SEO (meta tag dinamici)
 - [ ] Sitemap automatica
+- [ ] Form di contatto
 - [ ] Ricerca articoli
+
+# In corso:
+- [ ] ...
 
 
 🗄️ Schema database Supabase
 
--- WARNING: This schema is for context only and is not meant to be run.
--- Table order and constraints may not be valid for execution.
+Documenta qui le tabelle esistenti. Questo serve a Claude Code per capire
+la struttura dati senza doverla indovinare.
 
-CREATE TABLE public.events (
-  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  title text,
-  description text,
-  date date,
-  location text,
-  time text,
-  capacity text,
-  lat numeric,
-  lng numeric,
-  badge_text character varying,
-  image text,
-  CONSTRAINT events_pkey PRIMARY KEY (id)
+sql-- Esempio — sostituisci con le tabelle reali:
+
+-- Tabella articoli
+CREATE TABLE posts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  content TEXT,
+  excerpt TEXT,
+  featured_image TEXT,
+  published BOOLEAN DEFAULT false,
+  published_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Tabella categorie
+CREATE TABLE categories (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL
 );
 
 
@@ -134,6 +135,28 @@ CREATE TABLE public.events (
 Mappa la struttura reale delle cartelle principali.
 Aggiornala man mano che il progetto cresce.
 
+├── src/
+│   ├── app/                    # App Router Next.js
+│   │   ├── layout.tsx          # Layout root
+│   │   ├── page.tsx            # Homepage
+│   │   ├── blog/
+│   │   │   ├── page.tsx        # Lista articoli
+│   │   │   └── [slug]/
+│   │   │       └── page.tsx    # Articolo singolo
+│   │   └── globals.css         # Stili globali
+│   ├── components/             # Componenti riutilizzabili
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   └── ...
+│   ├── lib/                    # Utility e client
+│   │   └── supabase.ts         # Client Supabase
+│   └── types/                  # Tipi TypeScript
+│       └── database.ts         # Tipi Supabase
+├── public/                     # Asset statici
+├── next.config.js
+├── tailwind.config.js
+├── package.json
+└── CLAUDE.md                   # ← Questo file
 
 
 🔄 Workflow di sviluppo

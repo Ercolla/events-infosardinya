@@ -24,7 +24,8 @@
       "Bash(curl *)",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(python3 -c \"import json,sys; [print\\(e['location']\\) for e in json.loads\\(sys.stdin.read\\(\\)\\)]\")"
     ]
   }
 }

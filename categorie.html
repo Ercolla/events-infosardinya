@@ -245,96 +245,11 @@
         <div class="max-w-7xl mx-auto">
             <h2 class="section-title">Le Nostre Categorie</h2>
 
-            <div class="categories-grid">
-                <!-- Cultura -->
-                <div class="category-card-large">
-                    <img src="img/arte.jpg" alt="Cultura" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🎭</div>
-                        <h3 class="category-card-title">Cultura</h3>
-                        <p class="category-card-desc">
-                            Monumenti aperti, mostre e rassegne culturali. Scopri il patrimonio storico e artistico della Sardegna nelle sue città e nei suoi borghi.
-                        </p>
-                        <a href="eventi.html?filter=cultura" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Tradizioni -->
-                <div class="category-card-large">
-                    <img src="img/tradizioni.jpg" alt="Tradizioni" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">⛪</div>
-                        <h3 class="category-card-title">Tradizioni</h3>
-                        <p class="category-card-desc">
-                            Feste religiose, processioni e riti antichi. Vivi le tradizioni millenarie della Sardegna tramandate di generazione in generazione.
-                        </p>
-                        <a href="eventi.html?filter=tradizioni" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Sagre -->
-                <div class="category-card-large">
-                    <img src="img/enogastronomia.jpg" alt="Sagre" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🍽️</div>
-                        <h3 class="category-card-title">Sagre</h3>
-                        <p class="category-card-desc">
-                            Sagre enogastronomiche e degustazioni di prodotti tipici. Assapora i sapori autentici della cucina sarda nelle feste di paese.
-                        </p>
-                        <a href="eventi.html?filter=sagra" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Festival -->
-                <div class="category-card-large">
-                    <img src="https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800" alt="Festival" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🎪</div>
-                        <h3 class="category-card-title">Festival</h3>
-                        <p class="category-card-desc">
-                            Festival musicali, culturali e tematici. Grandi eventi che animano la Sardegna con musica, spettacoli e intrattenimento.
-                        </p>
-                        <a href="eventi.html?filter=festival" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Natura -->
-                <div class="category-card-large">
-                    <img src="img/parco-tepilora.jpg" alt="Natura" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🌿</div>
-                        <h3 class="category-card-title">Natura</h3>
-                        <p class="category-card-desc">
-                            Escursioni, parchi naturali e attività all'aperto. Esplora la bellezza incontaminata dei paesaggi sardi tra boschi e mare.
-                        </p>
-                        <a href="eventi.html?filter=natura" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Fiere -->
-                <div class="category-card-large">
-                    <img src="https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800" alt="Fiere" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🎠</div>
-                        <h3 class="category-card-title">Fiere</h3>
-                        <p class="category-card-desc">
-                            Fiere di paese, mercati e esposizioni. Scopri l'artigianato locale e i prodotti tipici nelle piazze e nei borghi della Sardegna.
-                        </p>
-                        <a href="eventi.html?filter=fiera" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
-                </div>
-
-                <!-- Benessere -->
-                <div class="category-card-large">
-                    <img src="https://images.pexels.com/photos/3822864/pexels-photo-3822864.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800" alt="Benessere" class="category-card-image">
-                    <div class="category-card-content">
-                        <div class="category-card-icon">🧘</div>
-                        <h3 class="category-card-title">Benessere</h3>
-                        <p class="category-card-desc">
-                            Yoga, meditazione e retreat. Ritrova il tuo equilibrio interiore immerso nella natura e nella tranquillità della Sardegna.
-                        </p>
-                        <a href="eventi.html?filter=benessere" class="category-card-btn">Visualizza Tutti</a>
-                    </div>
+            <div class="categories-grid" id="categories-container">
+                <!-- Le card vengono generate dinamicamente da Supabase -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #686868;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+                    Caricamento categorie...
                 </div>
             </div>
         </div>
@@ -356,66 +271,26 @@
         </div>
     </section>
 
-    <!-- Script per caricare eventi della categoria -->
+    <!-- Script per caricare categorie ed eventi dinamicamente da Supabase -->
     <script>
-        const categoryNames = {
-            'cultura': 'Cultura',
-            'tradizioni': 'Tradizioni',
-            'sagra': 'Sagre',
-            'festival': 'Festival',
-            'natura': 'Natura',
-            'fiera': 'Fiere',
-            'benessere': 'Benessere',
-            'musica': 'Musica',
-            'spettacoli': 'Spettacoli'
+        // Metadati categorie: nome visualizzato, icona, immagine, descrizione
+        const categoryMeta = {
+            'CULTURA':     { nome: 'Cultura',     filtro: 'cultura',     icona: '🎭', image: 'img/arte.jpg',              desc: 'Mostre, musei, eventi letterari e tutto ciò che celebra la ricca cultura sarda.' },
+            'TRADIZIONI':  { nome: 'Tradizioni',  filtro: 'tradizioni',  icona: '⛪', image: 'img/tradizioni.jpg',         desc: 'Processioni, feste patronali e riti antichi che mantengono vive le usanze della Sardegna.' },
+            'SAGRA':       { nome: 'Sagre',        filtro: 'sagra',       icona: '🍽️', image: 'img/enogastronomia.jpg',    desc: 'Sapori autentici, prodotti tipici e feste enogastronomiche in tutta l\'isola.' },
+            'FESTIVAL':    { nome: 'Festival',    filtro: 'festival',    icona: '🎪', image: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600', desc: 'Grandi festival di musica, arte e spettacolo che animano le estati sarde.' },
+            'NATURA':      { nome: 'Natura',      filtro: 'natura',      icona: '🌿', image: 'img/parco-tepilora.jpg',     desc: 'Escursioni, trekking e attività all\'aperto nei paesaggi mozzafiato della Sardegna.' },
+            'FIERA':       { nome: 'Fiere',        filtro: 'fiera',       icona: '🎠', image: 'https://images.pexels.com/photos/3171837/pexels-photo-3171837.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600', desc: 'Fiere artigianali, commerciali e di settore con espositori da tutta la Sardegna.' },
+            'BENESSERE':   { nome: 'Benessere',   filtro: 'benessere',   icona: '🧘', image: 'https://images.pexels.com/photos/3822864/pexels-photo-3822864.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=600', desc: 'Yoga, meditazione, terme e attività per il corpo e la mente nell\'isola.' },
+            'MUSICA':      { nome: 'Musica',      filtro: 'musica',      icona: '🎵', image: 'img/musica.jpg',             desc: 'Concerti, live session e serate musicali nei locali e nelle piazze della Sardegna.' },
+            'SPETTACOLI':  { nome: 'Spettacoli',  filtro: 'spettacoli',  icona: '🎬', image: 'img/spettacoli.jpg',         desc: 'Teatro, cinema, cabaret e performance dal vivo per tutti i gusti.' }
         };
 
-        // Mappa filtro → badge_text reale su Supabase (per la query esatta)
-        const categoryToBadge = {
-            'cultura': 'CULTURA',
-            'tradizioni': 'TRADIZIONI',
-            'sagra': 'SAGRA',
-            'festival': 'FESTIVAL',
-            'natura': 'NATURA',
-            'fiera': 'FIERA',
-            'benessere': 'BENESSERE',
-            'musica': 'MUSICA',
-            'spettacoli': 'SPETTACOLI'
-        };
-
-        // Funzione per renderizzare gli eventi
-        function renderCategoryEvents(events, categoryFilter) {
-            const container = document.getElementById('category-events-container');
-            const section = document.getElementById('category-events-section');
-            const categoryDisplay = document.getElementById('category-name-display');
-
-            if (events.length === 0) {
-                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">Nessun evento disponibile in questa categoria</div>';
-                section.style.display = 'block';
-                return;
-            }
-
-            // Aggiorna il nome della categoria
-            const categoryName = categoryNames[categoryFilter] || categoryFilter;
-            categoryDisplay.textContent = categoryName;
-
-            // Renderizza gli eventi
-            container.innerHTML = events.map(event => `
-                <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%;">
-                    <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" style="width: 100%; height: 220px; object-fit: cover;">
-                    <div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
-                        <div style="color: #FF2122; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">${event.badge_text || ''}</div>
-                        <h3 style="font-size: 1.125rem; font-weight: 700; color: #151515; margin-bottom: 0.75rem; line-height: 1.4; flex-grow: 1;">${event.title}</h3>
-                        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: #686868; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">📅 ${event.date}</div>
-                            <div style="display: flex; align-items: center; gap: 0.5rem;">📍 ${event.location}</div>
-                        </div>
-                        <div style="background: #0077B6; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem; width: 100%; text-decoration: none; display: inline-block; text-align: center;">Scopri di Più</div>
-                    </div>
-                </div>
-            `).join('');
-
-            section.style.display = 'block';
+        // Controlla se un evento è attivo (in corso o in programma)
+        function isEventActive(event) {
+            var today = new Date().toISOString().split('T')[0];
+            var endDate = event.date_end || event.date;
+            return endDate >= today;
         }
 
         // Rimuove eventi duplicati (stesso titolo + stessa data)
@@ -429,22 +304,124 @@
             });
         }
 
-        // Carica gli eventi al caricamento della pagina
-        document.addEventListener('DOMContentLoaded', async function() {
-            var urlParams = new URLSearchParams(window.location.search);
-            var categoryFilter = urlParams.get('filter');
+        // Genera le card delle categorie dalla lista eventi attivi
+        function renderCategoryCards(activeEvents) {
+            var container = document.getElementById('categories-container');
 
-            if (categoryFilter && categoryFilter.toLowerCase() in categoryNames) {
-                try {
-                    var badgeValue = categoryToBadge[categoryFilter.toLowerCase()];
-                    var rawEvents = await getEventsByCategory(badgeValue);
-                    var events = deduplicateEvents(rawEvents);
-                    renderCategoryEvents(events, categoryFilter.toLowerCase());
-                } catch (error) {
-                    console.error('Errore nel caricamento degli eventi:', error);
-                    document.getElementById('category-events-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento degli eventi</div>';
-                    document.getElementById('category-events-section').style.display = 'block';
+            // Raggruppa eventi per badge_text (categoria)
+            var grouped = {};
+            activeEvents.forEach(function(ev) {
+                var cat = (ev.badge_text || '').toUpperCase().trim();
+                if (!cat) return;
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(ev);
+            });
+
+            // Filtra solo categorie con metadati conosciuti e almeno 1 evento attivo
+            var categories = Object.keys(grouped).filter(function(cat) {
+                return categoryMeta[cat];
+            });
+
+            // Ordina per numero di eventi (decrescente)
+            categories.sort(function(a, b) {
+                return grouped[b].length - grouped[a].length;
+            });
+
+            if (categories.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #686868;">Nessuna categoria con eventi attivi al momento</div>';
+                return;
+            }
+
+            container.innerHTML = categories.map(function(cat) {
+                var meta = categoryMeta[cat];
+                var count = grouped[cat].length;
+                var label = count === 1 ? '1 evento in programma' : count + ' eventi in programma';
+
+                return '<div class="category-card-large">' +
+                    '<img src="' + meta.image + '" alt="' + meta.nome + '" class="category-card-image">' +
+                    '<div class="category-card-content">' +
+                        '<div class="category-card-icon">' + meta.icona + '</div>' +
+                        '<div class="category-card-title">' + meta.nome + '</div>' +
+                        '<div style="color: #0077B6; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.75rem;">' + label + '</div>' +
+                        '<div class="category-card-desc">' + meta.desc + '</div>' +
+                        '<a href="categorie.html?filter=' + meta.filtro + '" class="category-card-btn">Esplora ' + meta.nome + '</a>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        // Renderizza gli eventi di una categoria specifica
+        function renderCategoryEvents(events, categoryFilter) {
+            var container = document.getElementById('category-events-container');
+            var section = document.getElementById('category-events-section');
+            var categoryDisplay = document.getElementById('category-name-display');
+            var meta = categoryMeta[(categoryFilter || '').toUpperCase()];
+
+            if (events.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">Nessun evento disponibile in questa categoria</div>';
+                section.style.display = 'block';
+                return;
+            }
+
+            categoryDisplay.textContent = meta ? meta.nome : categoryFilter;
+
+            container.innerHTML = events.map(function(event) {
+                var dateDisplay = event.date;
+                if (event.date_end && event.date_end !== event.date) {
+                    dateDisplay = 'Dal ' + event.date + ' al ' + event.date_end;
                 }
+                return '<div class="event-card" onclick="window.location.href=\'dettaglio-evento.html?id=' + event.id + '\'" style="cursor: pointer; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%;">' +
+                    '<img src="' + (event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400') + '" alt="' + event.title + '" style="width: 100%; height: 220px; object-fit: cover;">' +
+                    '<div style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">' +
+                        '<div style="color: #FF2122; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">' + (event.badge_text || '') + '</div>' +
+                        '<h3 style="font-size: 1.125rem; font-weight: 700; color: #151515; margin-bottom: 0.75rem; line-height: 1.4; flex-grow: 1;">' + event.title + '</h3>' +
+                        '<div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.9rem; color: #686868; margin-top: auto; padding-top: 1rem; border-top: 1px solid #f0f0f0;">' +
+                            '<div style="display: flex; align-items: center; gap: 0.5rem;">📅 ' + dateDisplay + '</div>' +
+                            '<div style="display: flex; align-items: center; gap: 0.5rem;">📍 ' + event.location + '</div>' +
+                        '</div>' +
+                        '<div style="background: #0077B6; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 1rem; width: 100%; text-decoration: none; display: inline-block; text-align: center;">Scopri di Più</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+
+            section.style.display = 'block';
+        }
+
+        // Caricamento principale
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Carica tutti gli eventi da Supabase
+                var allEvents = await getAllEvents();
+                var uniqueEvents = deduplicateEvents(allEvents);
+
+                // Filtra solo eventi attivi (in corso o futuri)
+                var activeEvents = uniqueEvents.filter(isEventActive);
+
+                // Genera le card delle categorie
+                renderCategoryCards(activeEvents);
+
+                // Se c'è un filtro nell'URL, mostra anche gli eventi di quella categoria
+                var urlParams = new URLSearchParams(window.location.search);
+                var categoryFilter = urlParams.get('filter');
+
+                if (categoryFilter) {
+                    var badgeValue = categoryFilter.toUpperCase().trim();
+                    var categoryEvents = activeEvents.filter(function(ev) {
+                        return (ev.badge_text || '').toUpperCase().trim() === badgeValue;
+                    });
+                    renderCategoryEvents(categoryEvents, categoryFilter.toLowerCase());
+
+                    // Scrolla alla sezione eventi
+                    setTimeout(function() {
+                        var eventsSection = document.getElementById('category-events-section');
+                        if (eventsSection && eventsSection.style.display !== 'none') {
+                            eventsSection.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 300);
+                }
+            } catch (error) {
+                console.error('Errore nel caricamento:', error);
+                document.getElementById('categories-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #FF2122;">Errore nel caricamento delle categorie</div>';
             }
         });
     </script>

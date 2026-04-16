@@ -10,8 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -21,6 +25,7 @@
         :root {
             --color-primary: #151515;
             --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
         }
 
         .form-label {
@@ -45,8 +50,8 @@
         .form-textarea:focus,
         .form-select:focus {
             outline: none;
-            border-color: var(--color-accent-red);
-            box-shadow: 0 0 0 3px rgba(255, 33, 34, 0.1);
+            border-color: var(--color-sardegna-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
         }
 
         .form-textarea {
@@ -63,7 +68,7 @@
         .btn-submit {
             flex: 1;
             padding: 1rem;
-            background: var(--color-accent-red);
+            background: var(--color-sardegna-blue);
             color: white;
             border: none;
             border-radius: 0.375rem;
@@ -74,9 +79,15 @@
         }
 
         .btn-submit:hover {
-            background: #e01f20;
+            background: #005fa3;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 33, 34, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+        }
+
+        .btn-submit:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .btn-cancel {
@@ -90,6 +101,8 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
         }
 
         .btn-cancel:hover {
@@ -121,6 +134,22 @@
             font-size: 1.125rem;
             color: #686868;
         }
+
+        .event-preview {
+            background: #f9f9f9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid #e0e0e0;
+        }
+
+        .event-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -150,6 +179,11 @@
                 <!-- Form (nascosto finché non carica) -->
                 <form id="form-modifica-evento" class="hidden">
 
+                    <!-- Anteprima immagine attuale -->
+                    <div class="event-preview" id="image-preview" style="display:none;">
+                        <img id="preview-img" src="" alt="Anteprima">
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
                             <label class="form-label">Titolo evento *</label>
@@ -159,31 +193,39 @@
                             <label class="form-label">Categoria *</label>
                             <select id="categoria" name="categoria" required class="form-select">
                                 <option value="">-- Seleziona una categoria --</option>
-                                <option value="musica">Musica</option>
-                                <option value="arte">Arte e Cultura</option>
-                                <option value="sport">Sport</option>
-                                <option value="gastronomia">Gastronomia</option>
-                                <option value="tradizione">Tradizioni</option>
-                                <option value="famiglia">Famiglia</option>
-                                <option value="altro">Altro</option>
+                                <option value="CULTURA">🎭 Cultura</option>
+                                <option value="TRADIZIONI">⛪ Tradizioni</option>
+                                <option value="SAGRA">🍽️ Sagre</option>
+                                <option value="FESTIVAL">🎪 Festival</option>
+                                <option value="NATURA">🌿 Natura</option>
+                                <option value="FIERA">🎠 Fiere</option>
+                                <option value="BENESSERE">🧘 Benessere</option>
+                                <option value="MUSICA">🎵 Musica</option>
+                                <option value="SPETTACOLI">🎬 Spettacoli</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="form-label">Data inizio *</label>
-                            <input type="date" id="dataInizio" name="dataInizio" required class="form-input">
+                            <label class="form-label">Data *</label>
+                            <input type="date" id="dataEvento" name="dataEvento" required class="form-input">
                         </div>
                         <div>
-                            <label class="form-label">Data fine</label>
-                            <input type="date" id="dataFine" name="dataFine" class="form-input">
+                            <label class="form-label">Orario</label>
+                            <input type="text" id="orario" name="orario" class="form-input" placeholder="Es. 20:00 - 23:00">
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="form-label">Location / Luogo *</label>
-                        <input type="text" id="location" name="location" required class="form-input">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="form-label">Luogo / Città *</label>
+                            <input type="text" id="location" name="location" required class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Capienza / Posti</label>
+                            <input type="text" id="capienza" name="capienza" class="form-input" placeholder="Es. Ingresso libero, 500 posti...">
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -191,20 +233,15 @@
                         <textarea id="descrizione" name="descrizione" required class="form-textarea"></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="form-label">URL Immagine</label>
-                            <input type="url" id="immagineUrl" name="immagineUrl" class="form-input">
-                        </div>
-                        <div>
-                            <label class="form-label">Prezzo (€)</label>
-                            <input type="number" id="prezzo" name="prezzo" min="0" step="0.01" class="form-input">
-                        </div>
+                    <div class="mb-6">
+                        <label class="form-label">URL Immagine</label>
+                        <input type="url" id="immagineUrl" name="immagineUrl" class="form-input"
+                               placeholder="https://example.com/image.jpg (lascia vuoto per mantenere l'attuale)">
                     </div>
 
                     <div class="form-actions">
-                        <button type="submit" class="btn-submit">Salva Modifiche</button>
-                        <button type="button" onclick="window.location.href='miei-eventi.html'" class="btn-cancel">Annulla</button>
+                        <button type="submit" id="btn-salva" class="btn-submit">Salva Modifiche</button>
+                        <a href="miei-eventi.html" class="btn-cancel">Annulla</a>
                     </div>
 
                 </form>
@@ -215,97 +252,175 @@
     </section>
 
     <script>
-        const user = authGetCurrentUser();
-        const params = new URLSearchParams(window.location.search);
-        const eventId = params.get('id');
+        var user = authGetCurrentUser();
+        var urlParams = new URLSearchParams(window.location.search);
+        var eventId = urlParams.get('id');
+        var localId = urlParams.get('localId');
 
-        const form = document.getElementById('form-modifica-evento');
-        const loading = document.getElementById('loading');
-        const errorDiv = document.getElementById('error-msg');
-        const successDiv = document.getElementById('success-msg');
+        var form = document.getElementById('form-modifica-evento');
+        var loading = document.getElementById('loading');
+        var errorDiv = document.getElementById('error-msg');
+        var successDiv = document.getElementById('success-msg');
 
-        function loadEvent() {
+        var currentImage = '';
+
+        // Immagini predefinite per categoria
+        var categoryDefaultImages = {
+            'CULTURA': 'img/arte.jpg',
+            'TRADIZIONI': 'img/tradizioni.jpg',
+            'SAGRA': 'img/enogastronomia.jpg',
+            'FESTIVAL': 'img/spettacoli.jpg',
+            'NATURA': 'img/parco-tepilora.jpg',
+            'FIERA': 'img/famiglia.jpg',
+            'BENESSERE': 'img/evento-10.jpg',
+            'MUSICA': 'img/musica.jpg',
+            'SPETTACOLI': 'img/spettacoli.jpg'
+        };
+
+        // Carica l'evento da Supabase
+        async function loadEvent() {
             if (!eventId) {
-                errorDiv.textContent = 'ID evento non specificato. Ritorna a "I miei eventi".';
+                errorDiv.textContent = 'ID evento non specificato.';
                 errorDiv.classList.remove('hidden');
                 loading.classList.add('hidden');
                 return;
             }
 
-            const evento = eventiGetById(eventId);
+            // Verifica che l'utente sia il proprietario (controllo via localStorage)
+            var localEvents = eventiGetAll();
+            var isOwner = localEvents.some(function(e) {
+                var sbId = e.supabaseId || e.id;
+                return (String(sbId) === String(eventId)) && (e.authorId === user.id);
+            });
 
-            if (!evento) {
-                errorDiv.textContent = 'Evento non trovato.';
-                errorDiv.classList.remove('hidden');
-                loading.classList.add('hidden');
-                return;
-            }
-
-            // Verifica che l'utente sia il proprietario
-            if (evento.authorId !== user.id) {
+            if (!isOwner) {
                 errorDiv.textContent = 'Non sei autorizzato a modificare questo evento.';
                 errorDiv.classList.remove('hidden');
                 loading.classList.add('hidden');
                 return;
             }
 
-            // Pre-compila il form
-            document.getElementById('titolo').value = evento.titolo;
-            document.getElementById('categoria').value = evento.categoria;
-            document.getElementById('dataInizio').value = evento.dataInizio;
-            document.getElementById('dataFine').value = evento.dataFine;
-            document.getElementById('location').value = evento.location;
-            document.getElementById('descrizione').value = evento.descrizione;
-            document.getElementById('immagineUrl').value = evento.immagineUrl;
-            document.getElementById('prezzo').value = evento.prezzo;
+            try {
+                // Carica dati aggiornati da Supabase
+                var evento = await getEventById(parseInt(eventId));
 
-            // Mostra il form e nascondi il loading
-            loading.classList.add('hidden');
-            form.classList.remove('hidden');
+                if (!evento) {
+                    errorDiv.textContent = 'Evento non trovato su Supabase.';
+                    errorDiv.classList.remove('hidden');
+                    loading.classList.add('hidden');
+                    return;
+                }
+
+                // Pre-compila il form con i dati attuali
+                document.getElementById('titolo').value = evento.title || '';
+                document.getElementById('categoria').value = evento.badge_text || '';
+                document.getElementById('dataEvento').value = evento.date || '';
+                document.getElementById('orario').value = evento.time || '';
+                document.getElementById('location').value = evento.location || '';
+                document.getElementById('capienza').value = evento.capacity || '';
+                document.getElementById('descrizione').value = evento.description || '';
+                document.getElementById('immagineUrl').value = '';
+
+                currentImage = evento.image || '';
+
+                // Mostra anteprima immagine attuale
+                if (currentImage) {
+                    document.getElementById('preview-img').src = currentImage;
+                    document.getElementById('image-preview').style.display = 'block';
+                }
+
+                // Mostra il form
+                loading.classList.add('hidden');
+                form.classList.remove('hidden');
+
+            } catch (err) {
+                console.error('Errore caricamento evento:', err);
+                errorDiv.textContent = 'Errore nel caricamento dell\'evento.';
+                errorDiv.classList.remove('hidden');
+                loading.classList.add('hidden');
+            }
         }
 
-        // Gestisci il submit del form
-        form.addEventListener('submit', function(e) {
+        // Gestisci il submit del form — salva su Supabase
+        form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const dati = {
-                titolo: document.getElementById('titolo').value.trim(),
-                dataInizio: document.getElementById('dataInizio').value,
-                dataFine: document.getElementById('dataFine').value,
-                location: document.getElementById('location').value.trim(),
-                categoria: document.getElementById('categoria').value,
-                descrizione: document.getElementById('descrizione').value.trim(),
-                immagineUrl: document.getElementById('immagineUrl').value.trim(),
-                prezzo: document.getElementById('prezzo').value || '0.00'
-            };
+            var btnSalva = document.getElementById('btn-salva');
+            var titolo = document.getElementById('titolo').value.trim();
+            var categoria = document.getElementById('categoria').value;
+            var dataEvento = document.getElementById('dataEvento').value;
+            var orario = document.getElementById('orario').value.trim();
+            var location = document.getElementById('location').value.trim();
+            var capienza = document.getElementById('capienza').value.trim();
+            var descrizione = document.getElementById('descrizione').value.trim();
+            var immagineUrl = document.getElementById('immagineUrl').value.trim();
 
             // Validazione
-            if (!dati.titolo || !dati.dataInizio || !dati.location || !dati.categoria || !dati.descrizione) {
+            if (!titolo || !dataEvento || !location || !categoria || !descrizione) {
                 errorDiv.textContent = 'Compila tutti i campi obbligatori (contrassegnati con *)';
                 errorDiv.classList.remove('hidden');
                 successDiv.classList.add('hidden');
                 return;
             }
 
-            // Se dataFine non è compilata, usa la dataInizio
-            if (!dati.dataFine) {
-                dati.dataFine = dati.dataInizio;
-            }
+            // Immagine: usa nuova URL, oppure mantieni quella attuale, oppure default per categoria
+            var image = immagineUrl || currentImage || categoryDefaultImages[categoria] || 'img/spettacoli.jpg';
 
-            // Aggiorna evento
-            const result = eventiUpdate(eventId, dati);
+            // Disabilita il bottone
+            btnSalva.disabled = true;
+            btnSalva.textContent = 'Salvataggio in corso...';
 
-            if (result.ok) {
-                successDiv.textContent = '✓ Evento aggiornato con successo! Stai per essere reindirizzato...';
+            try {
+                // Aggiorna su Supabase
+                var { data, error } = await supabaseClient
+                    .from('events')
+                    .update({
+                        title: titolo,
+                        description: descrizione,
+                        date: dataEvento,
+                        location: location,
+                        time: orario || null,
+                        capacity: capienza || 'Ingresso libero',
+                        badge_text: categoria,
+                        image: image
+                    })
+                    .eq('id', parseInt(eventId))
+                    .select();
+
+                if (error) throw error;
+
+                // Aggiorna anche il riferimento in localStorage
+                if (localId) {
+                    var localEvents = eventiGetAll();
+                    var idx = localEvents.findIndex(function(e) { return String(e.id) === String(localId); });
+                    if (idx !== -1) {
+                        localEvents[idx].titolo = titolo;
+                        localEvents[idx].dataInizio = dataEvento;
+                        localEvents[idx].dataFine = dataEvento;
+                        localEvents[idx].location = location;
+                        localEvents[idx].categoria = categoria;
+                        localEvents[idx].descrizione = descrizione;
+                        localEvents[idx].immagineUrl = image;
+                        localEvents[idx].modificatoIl = new Date().toISOString();
+                        localStorage.setItem('eis_events', JSON.stringify(localEvents));
+                    }
+                }
+
+                successDiv.textContent = 'Evento aggiornato con successo! Stai per essere reindirizzato...';
                 successDiv.classList.remove('hidden');
                 errorDiv.classList.add('hidden');
-                setTimeout(() => {
+
+                setTimeout(function() {
                     window.location.href = 'miei-eventi.html';
                 }, 2000);
-            } else {
-                errorDiv.textContent = 'Errore: ' + result.error;
+
+            } catch (err) {
+                console.error('Errore aggiornamento Supabase:', err);
+                errorDiv.textContent = 'Errore nel salvataggio: ' + (err.message || 'Riprova più tardi.');
                 errorDiv.classList.remove('hidden');
                 successDiv.classList.add('hidden');
+                btnSalva.disabled = false;
+                btnSalva.textContent = 'Salva Modifiche';
             }
         });
 

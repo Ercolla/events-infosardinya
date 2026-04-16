@@ -101,9 +101,20 @@
             transition: all 0.3s ease;
         }
 
+        .btn-view {
+            background: #0077B6;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            background: #005fa3;
+        }
+
         .btn-edit {
             background: var(--color-accent-red);
             color: white;
+            text-decoration: none;
         }
 
         .btn-edit:hover {
@@ -294,7 +305,8 @@
                     '</div>' +
                     '<p class="text-gray-600 text-sm mb-4">' + desc.substring(0, 150) + (desc.length > 150 ? '...' : '') + '</p>' +
                     '<div class="event-actions">' +
-                    '<a href="dettaglio-evento.html?id=' + eventId + '" class="btn-action btn-edit" style="text-decoration:none;">Visualizza</a>' +
+                    '<a href="dettaglio-evento.html?id=' + eventId + '" class="btn-action btn-view">Visualizza</a>' +
+                    '<a href="modifica-evento.html?id=' + eventId + '&localId=' + encodeURIComponent(evento.id) + '" class="btn-action btn-edit">Modifica</a>' +
                     '<button onclick="deleteEvent(\'' + evento.id + '\', ' + (sbId || 'null') + ')" class="btn-action btn-delete">Cancella</button>' +
                     '</div></div></div>';
             });

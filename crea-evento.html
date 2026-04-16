@@ -10,8 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -125,32 +129,42 @@
                             <label class="form-label">Categoria *</label>
                             <select id="categoria" name="categoria" required class="form-select">
                                 <option value="">-- Seleziona una categoria --</option>
-                                <option value="musica">Musica</option>
-                                <option value="arte">Arte e Cultura</option>
-                                <option value="sport">Sport</option>
-                                <option value="gastronomia">Gastronomia</option>
-                                <option value="tradizione">Tradizioni</option>
-                                <option value="famiglia">Famiglia</option>
-                                <option value="altro">Altro</option>
+                                <option value="CULTURA">🎭 Cultura</option>
+                                <option value="TRADIZIONI">⛪ Tradizioni</option>
+                                <option value="SAGRA">🍽️ Sagre</option>
+                                <option value="FESTIVAL">🎪 Festival</option>
+                                <option value="NATURA">🌿 Natura</option>
+                                <option value="FIERA">🎠 Fiere</option>
+                                <option value="BENESSERE">🧘 Benessere</option>
+                                <option value="MUSICA">🎵 Musica</option>
+                                <option value="SPETTACOLI">🎬 Spettacoli</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label class="form-label">Data inizio *</label>
-                            <input type="date" id="dataInizio" name="dataInizio" required class="form-input">
+                            <label class="form-label">Data *</label>
+                            <input type="date" id="dataEvento" name="dataEvento" required class="form-input">
                         </div>
                         <div>
-                            <label class="form-label">Data fine</label>
-                            <input type="date" id="dataFine" name="dataFine" class="form-input">
+                            <label class="form-label">Orario</label>
+                            <input type="text" id="orario" name="orario"
+                                   class="form-input" placeholder="Es. 20:00 - 23:00">
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <label class="form-label">Location / Luogo *</label>
-                        <input type="text" id="location" name="location" required
-                               class="form-input" placeholder="Es. Piazza Yenne, Cagliari">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="form-label">Luogo / Città *</label>
+                            <input type="text" id="location" name="location" required
+                                   class="form-input" placeholder="Es. Cagliari">
+                        </div>
+                        <div>
+                            <label class="form-label">Capienza / Posti</label>
+                            <input type="text" id="capienza" name="capienza"
+                                   class="form-input" placeholder="Es. Ingresso libero, 500 posti...">
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -159,17 +173,11 @@
                                   class="form-textarea" placeholder="Descrivi l'evento in dettaglio..."></textarea>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label class="form-label">URL Immagine</label>
-                            <input type="url" id="immagineUrl" name="immagineUrl"
-                                   class="form-input" placeholder="https://example.com/image.jpg">
-                        </div>
-                        <div>
-                            <label class="form-label">Prezzo (€)</label>
-                            <input type="number" id="prezzo" name="prezzo" min="0" step="0.01"
-                                   class="form-input" placeholder="0.00">
-                        </div>
+                    <div class="mb-6">
+                        <label class="form-label">URL Immagine</label>
+                        <input type="url" id="immagineUrl" name="immagineUrl"
+                               class="form-input" placeholder="https://example.com/image.jpg (lascia vuoto per immagine predefinita)">
+                        <p class="text-sm text-gray-500 mt-1">Se non inserisci un'immagine, ne verrà assegnata una in base alla categoria.</p>
                     </div>
 
                     <button type="submit" class="w-full submit-btn">Pubblica Evento</button>
@@ -189,49 +197,110 @@
     </section>
 
     <script>
-        document.getElementById('form-crea-evento').addEventListener('submit', function(e) {
+        // Immagini predefinite per categoria
+        var categoryDefaultImages = {
+            'CULTURA': 'img/arte.jpg',
+            'TRADIZIONI': 'img/tradizioni.jpg',
+            'SAGRA': 'img/enogastronomia.jpg',
+            'FESTIVAL': 'img/spettacoli.jpg',
+            'NATURA': 'img/parco-tepilora.jpg',
+            'FIERA': 'img/famiglia.jpg',
+            'BENESSERE': 'img/evento-10.jpg',
+            'MUSICA': 'img/musica.jpg',
+            'SPETTACOLI': 'img/spettacoli.jpg'
+        };
+
+        document.getElementById('form-crea-evento').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const dati = {
-                titolo: document.getElementById('titolo').value.trim(),
-                dataInizio: document.getElementById('dataInizio').value,
-                dataFine: document.getElementById('dataFine').value,
-                location: document.getElementById('location').value.trim(),
-                categoria: document.getElementById('categoria').value,
-                descrizione: document.getElementById('descrizione').value.trim(),
-                immagineUrl: document.getElementById('immagineUrl').value.trim(),
-                prezzo: document.getElementById('prezzo').value || '0.00'
-            };
+            var errorDiv = document.getElementById('error-msg');
+            var successDiv = document.getElementById('success-msg');
+            var submitBtn = this.querySelector('button[type="submit"]');
 
-            const errorDiv = document.getElementById('error-msg');
-            const successDiv = document.getElementById('success-msg');
+            var titolo = document.getElementById('titolo').value.trim();
+            var dataEvento = document.getElementById('dataEvento').value;
+            var orario = document.getElementById('orario').value.trim();
+            var location = document.getElementById('location').value.trim();
+            var categoria = document.getElementById('categoria').value;
+            var capienza = document.getElementById('capienza').value.trim();
+            var descrizione = document.getElementById('descrizione').value.trim();
+            var immagineUrl = document.getElementById('immagineUrl').value.trim();
 
             // Validazione
-            if (!dati.titolo || !dati.dataInizio || !dati.location || !dati.categoria || !dati.descrizione) {
+            if (!titolo || !dataEvento || !location || !categoria || !descrizione) {
                 errorDiv.textContent = 'Compila tutti i campi obbligatori (contrassegnati con *)';
                 errorDiv.classList.remove('hidden');
+                successDiv.classList.add('hidden');
                 return;
             }
 
-            // Se dataFine non è compilata, usa la dataInizio
-            if (!dati.dataFine) {
-                dati.dataFine = dati.dataInizio;
-            }
+            // Immagine: usa URL fornito oppure immagine predefinita per categoria
+            var image = immagineUrl || categoryDefaultImages[categoria] || 'img/spettacoli.jpg';
 
-            // Crea evento
-            const result = eventiCreate(dati);
+            // Prepara l'oggetto per Supabase (mappato sulle colonne reali)
+            var eventoSupabase = {
+                title: titolo,
+                description: descrizione,
+                date: dataEvento,
+                location: location,
+                time: orario || null,
+                capacity: capienza || 'Ingresso libero',
+                badge_text: categoria,
+                image: image
+            };
 
-            if (result.ok) {
-                successDiv.textContent = '✓ Evento pubblicato con successo! Stai per essere reindirizzato...';
+            // Disabilita il bottone durante l'invio
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Pubblicazione in corso...';
+
+            try {
+                var { data, error } = await supabaseClient
+                    .from('events')
+                    .insert([eventoSupabase])
+                    .select();
+
+                if (error) {
+                    throw error;
+                }
+
+                // Salva riferimento in localStorage per la pagina "Miei Eventi"
+                var user = authGetCurrentUser();
+                if (user) {
+                    var localEvents = eventiGetAll();
+                    localEvents.push({
+                        id: data[0].id,
+                        supabaseId: data[0].id,
+                        titolo: titolo,
+                        dataInizio: dataEvento,
+                        dataFine: dataEvento,
+                        location: location,
+                        categoria: categoria,
+                        descrizione: descrizione,
+                        immagineUrl: image,
+                        prezzo: '0.00',
+                        authorId: user.id,
+                        authorNome: user.nome,
+                        creatoIl: new Date().toISOString(),
+                        modificatoIl: new Date().toISOString()
+                    });
+                    localStorage.setItem('eis_events', JSON.stringify(localEvents));
+                }
+
+                successDiv.textContent = 'Evento pubblicato con successo! Stai per essere reindirizzato...';
                 successDiv.classList.remove('hidden');
                 errorDiv.classList.add('hidden');
-                setTimeout(() => {
-                    window.location.href = 'miei-eventi.html?created=1';
+
+                setTimeout(function() {
+                    window.location.href = 'eventi.html';
                 }, 2000);
-            } else {
-                errorDiv.textContent = 'Errore: ' + result.error;
+
+            } catch (err) {
+                console.error('Errore inserimento Supabase:', err);
+                errorDiv.textContent = 'Errore nella pubblicazione: ' + (err.message || 'Riprova più tardi.');
                 errorDiv.classList.remove('hidden');
                 successDiv.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Pubblica Evento';
             }
         });
     </script>

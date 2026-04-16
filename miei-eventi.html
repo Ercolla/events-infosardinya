@@ -10,8 +10,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -212,93 +216,109 @@
     </section>
 
     <script>
-        const user = authGetCurrentUser();
-        const container = document.getElementById('events-container');
-        const createdAlert = document.getElementById('created-alert');
-
-        // DEBUG: Log user e eventi nel localStorage
-        console.log('User loggato:', user);
-        console.log('Tutti gli eventi nel localStorage:', JSON.parse(localStorage.getItem('eis_events') || '[]'));
+        var user = authGetCurrentUser();
+        var container = document.getElementById('events-container');
+        var createdAlert = document.getElementById('created-alert');
 
         // Mostra alert se evento è stato appena creato
-        const params = new URLSearchParams(window.location.search);
+        var params = new URLSearchParams(window.location.search);
         if (params.get('created') === '1') {
             createdAlert.classList.remove('hidden');
-            setTimeout(() => {
-                createdAlert.classList.add('hidden');
-            }, 5000);
-            // Rimuovi il parametro URL
+            setTimeout(function() { createdAlert.classList.add('hidden'); }, 5000);
             window.history.replaceState({}, document.title, window.location.pathname);
         }
 
-        // Carica gli eventi dell'utente
-        function loadUserEvents() {
-            const events = eventiGetByUser(user.id);
-            console.log('Eventi dell\'utente ' + user.id + ':', events);
+        // Carica gli eventi dell'utente (da localStorage + dati freschi da Supabase)
+        async function loadUserEvents() {
+            // Prendi gli eventi dell'utente dal localStorage (contiene gli ID Supabase)
+            var localEvents = eventiGetByUser(user.id);
 
-            if (events.length === 0) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-lg shadow-lg p-8">
-                        <div class="empty-state">
-                            <div class="empty-icon">📭</div>
-                            <p class="empty-text">Non hai ancora pubblicato nessun evento.</p>
-                            <a href="crea-evento.html" class="btn-primary">Crea il tuo primo evento</a>
-                        </div>
-                    </div>
-                `;
+            if (localEvents.length === 0) {
+                container.innerHTML = '<div class="bg-white rounded-lg shadow-lg p-8">' +
+                    '<div class="empty-state">' +
+                    '<div class="empty-icon">📭</div>' +
+                    '<p class="empty-text">Non hai ancora pubblicato nessun evento.</p>' +
+                    '<a href="crea-evento.html" class="btn-primary">Crea il tuo primo evento</a>' +
+                    '</div></div>';
                 return;
             }
 
-            let html = '';
-            events.forEach(evento => {
-                const dataInizio = new Date(evento.dataInizio);
-                const dataFineObj = new Date(evento.dataFine);
-                const dataInizioFormatted = dataInizio.toLocaleDateString('it-IT');
-                const dataFineFormatted = dataFineObj.toLocaleDateString('it-IT');
+            // Per ogni evento locale, prova a caricare i dati aggiornati da Supabase
+            var supabaseIds = localEvents
+                .filter(function(e) { return e.supabaseId || (typeof e.id === 'number'); })
+                .map(function(e) { return e.supabaseId || e.id; });
 
-                html += `
-                    <div class="event-item">
-                        <img src="${evento.immagineUrl || './img/evento-4.jpg'}"
-                             alt="${evento.titolo}"
-                             class="event-image">
-                        <div class="event-info">
-                            <span class="event-badge">${evento.categoria.toUpperCase()}</span>
-                            <h2 class="event-title">${evento.titolo}</h2>
-                            <div class="event-meta">
-                                <div class="event-meta-item">
-                                    📅 ${dataInizioFormatted} - ${dataFineFormatted}
-                                </div>
-                                <div class="event-meta-item">
-                                    📍 ${evento.location}
-                                </div>
-                                <div class="event-meta-item">
-                                    💶 €${parseFloat(evento.prezzo).toFixed(2)}
-                                </div>
-                            </div>
-                            <p class="text-gray-600 text-sm mb-4">${evento.descrizione.substring(0, 150)}...</p>
-                            <div class="event-actions">
-                                <a href="modifica-evento.html?id=${evento.id}" class="btn-action btn-edit">Modifica</a>
-                                <button onclick="deleteEvent('${evento.id}')" class="btn-action btn-delete">Cancella</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            var supabaseEvents = {};
+            if (supabaseIds.length > 0) {
+                try {
+                    var { data } = await supabaseClient
+                        .from('events')
+                        .select('*')
+                        .in('id', supabaseIds);
+                    if (data) {
+                        data.forEach(function(e) { supabaseEvents[e.id] = e; });
+                    }
+                } catch (err) {
+                    console.error('Errore caricamento da Supabase:', err);
+                }
+            }
+
+            var html = '';
+            localEvents.forEach(function(evento) {
+                // Usa dati Supabase se disponibili, altrimenti fallback su localStorage
+                var sbId = evento.supabaseId || evento.id;
+                var sb = supabaseEvents[sbId];
+
+                var titolo = sb ? sb.title : (evento.titolo || '');
+                var data = sb ? sb.date : (evento.dataInizio || '');
+                var loc = sb ? sb.location : (evento.location || '');
+                var badge = sb ? sb.badge_text : (evento.categoria || '').toUpperCase();
+                var img = sb ? sb.image : (evento.immagineUrl || 'img/spettacoli.jpg');
+                var desc = sb ? (sb.description || '') : (evento.descrizione || '');
+                var eventId = sb ? sb.id : evento.id;
+
+                var dataFormatted = '';
+                if (data) {
+                    var d = new Date(data + 'T00:00:00');
+                    dataFormatted = d.toLocaleDateString('it-IT');
+                }
+
+                html += '<div class="event-item">' +
+                    '<img src="' + img + '" alt="' + titolo + '" class="event-image">' +
+                    '<div class="event-info">' +
+                    '<span class="event-badge">' + badge + '</span>' +
+                    '<h2 class="event-title">' + titolo + '</h2>' +
+                    '<div class="event-meta">' +
+                    '<div class="event-meta-item">📅 ' + dataFormatted + '</div>' +
+                    '<div class="event-meta-item">📍 ' + loc + '</div>' +
+                    '</div>' +
+                    '<p class="text-gray-600 text-sm mb-4">' + desc.substring(0, 150) + (desc.length > 150 ? '...' : '') + '</p>' +
+                    '<div class="event-actions">' +
+                    '<a href="dettaglio-evento.html?id=' + eventId + '" class="btn-action btn-edit" style="text-decoration:none;">Visualizza</a>' +
+                    '<button onclick="deleteEvent(\'' + evento.id + '\', ' + (sbId || 'null') + ')" class="btn-action btn-delete">Cancella</button>' +
+                    '</div></div></div>';
             });
 
             container.innerHTML = html;
         }
 
-        // Cancella un evento con conferma
-        function deleteEvent(eventId) {
-            if (confirm('Sei sicuro di voler cancellare questo evento? Questa azione non può essere annullata.')) {
-                const result = eventiDelete(eventId);
-                if (result.ok) {
-                    alert('Evento cancellato con successo.');
-                    loadUserEvents();
-                } else {
-                    alert('Errore: ' + result.error);
+        // Cancella un evento (da localStorage e da Supabase)
+        async function deleteEvent(localId, supabaseId) {
+            if (!confirm('Sei sicuro di voler cancellare questo evento?')) return;
+
+            // Rimuovi da localStorage
+            var result = eventiDelete(localId);
+
+            // Rimuovi anche da Supabase se ha un ID
+            if (supabaseId) {
+                try {
+                    await supabaseClient.from('events').delete().eq('id', supabaseId);
+                } catch (err) {
+                    console.error('Errore cancellazione da Supabase:', err);
                 }
             }
+
+            loadUserEvents();
         }
 
         // Carica gli eventi al caricamento della pagina

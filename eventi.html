@@ -298,15 +298,9 @@
     <section class="filters-section">
         <div class="filters-container">
             <label class="filter-label">Filtra per categoria:</label>
-            <div class="filter-buttons">
+            <div class="filter-buttons" id="filter-buttons-container">
                 <button class="filter-btn active" data-filter="all">Tutti</button>
-                <button class="filter-btn" data-filter="cultura">🎭 Cultura</button>
-                <button class="filter-btn" data-filter="tradizioni">⛪ Tradizioni</button>
-                <button class="filter-btn" data-filter="sagra">🍽️ Sagre</button>
-                <button class="filter-btn" data-filter="festival">🎪 Festival</button>
-                <button class="filter-btn" data-filter="natura">🌿 Natura</button>
-                <button class="filter-btn" data-filter="fiera">🎠 Fiere</button>
-                <button class="filter-btn" data-filter="benessere">🧘 Benessere</button>
+                <!-- I filtri vengono generati dinamicamente dai dati Supabase -->
             </div>
         </div>
     </section>
@@ -377,23 +371,57 @@
             renderEvents(filteredEvents);
         }
 
-        // Gestione dei filtri per categoria
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentCategoryFilter = this.getAttribute('data-filter');
-                applyFilters();
+        // Icone per ogni categoria (usate nei filtri dinamici)
+        var categoryIcons = {
+            'CULTURA': '🎭', 'TRADIZIONI': '⛪', 'SAGRA': '🍽️',
+            'FESTIVAL': '🎪', 'NATURA': '🌿', 'FIERA': '🎠',
+            'BENESSERE': '🧘', 'MUSICA': '🎵', 'SPETTACOLI': '🎬',
+            'SPORT': '⚽', 'ARTE': '🎨'
+        };
+
+        // Genera i bottoni filtro dalle categorie presenti nei dati
+        function buildFilterButtons(events) {
+            var container = document.getElementById('filter-buttons-container');
+            // Estrai categorie uniche
+            var categories = [];
+            var seen = {};
+            events.forEach(function(e) {
+                var badge = (e.badge_text || '').trim().toUpperCase();
+                if (badge && !seen[badge]) {
+                    seen[badge] = true;
+                    categories.push(badge);
+                }
             });
-        });
+            categories.sort();
+
+            // Aggiungi un bottone per ogni categoria trovata
+            categories.forEach(function(cat) {
+                var icon = categoryIcons[cat] || '📌';
+                var btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.setAttribute('data-filter', cat.toLowerCase());
+                btn.textContent = icon + ' ' + cat.charAt(0) + cat.slice(1).toLowerCase();
+                container.appendChild(btn);
+            });
+
+            // Aggancia event listener a TUTTI i bottoni (incluso "Tutti")
+            container.querySelectorAll('.filter-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    container.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+                    btn.classList.add('active');
+                    currentCategoryFilter = btn.getAttribute('data-filter');
+                    applyFilters();
+                });
+            });
+        }
 
         // Rimuove eventi duplicati (stesso titolo + stessa data)
         function deduplicateEvents(events) {
-            const seen = new Set();
+            var seen = {};
             return events.filter(function(event) {
-                const key = (event.title || '') + '|' + (event.date || '');
-                if (seen.has(key)) return false;
-                seen.add(key);
+                var key = (event.title || '') + '|' + (event.date || '');
+                if (seen[key]) return false;
+                seen[key] = true;
                 return true;
             });
         }
@@ -403,6 +431,9 @@
             try {
                 var rawEvents = await getAllEvents();
                 allEvents = deduplicateEvents(rawEvents);
+
+                // Genera filtri dinamici dalle categorie reali
+                buildFilterButtons(allEvents);
 
                 // Leggi parametri dalla URL
                 const urlParams = new URLSearchParams(window.location.search);

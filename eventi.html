@@ -357,12 +357,18 @@
         function applyFilters() {
             const catFilter = (currentCategoryFilter || '').trim().toLowerCase();
             const cityFilter = (currentCityFilter || '').trim().toLowerCase();
+            // Supporto multi-città: "cagliari,castiadas" viene splittato
+            const cityList = cityFilter.split(',').map(function(c) { return c.trim(); }).filter(Boolean);
+
             filteredEvents = allEvents.filter(event => {
                 // Confronto case-insensitive su badge_text, tollerante a emoji/spazi
                 const badge = (event.badge_text || '').trim().toLowerCase();
                 const categoryMatch = catFilter === 'all' || badge === catFilter || badge.includes(catFilter);
                 const loc = (event.location || '').trim().toLowerCase();
-                const cityMatch = cityFilter === 'all' || loc === cityFilter || loc.includes(cityFilter);
+                // Controlla se la location dell'evento matcha almeno una delle città nel filtro
+                const cityMatch = cityFilter === 'all' || cityList.some(function(city) {
+                    return loc === city || loc.includes(city);
+                });
                 return categoryMatch && cityMatch;
             });
             renderEvents(filteredEvents);
@@ -378,23 +384,46 @@
             });
         });
 
+        // Rimuove eventi duplicati (stesso titolo + stessa data)
+        function deduplicateEvents(events) {
+            const seen = new Set();
+            return events.filter(function(event) {
+                const key = (event.title || '') + '|' + (event.date || '');
+                if (seen.has(key)) return false;
+                seen.add(key);
+                return true;
+            });
+        }
+
         // Carica gli eventi all'avvio della pagina
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                allEvents = await getAllEvents();
+                var rawEvents = await getAllEvents();
+                allEvents = deduplicateEvents(rawEvents);
 
                 // Leggi parametri dalla URL
                 const urlParams = new URLSearchParams(window.location.search);
                 const cityParam = urlParams.get('city');
+                const citiesParam = urlParams.get('cities');
                 const categoryParam = urlParams.get('filter');
 
-                // Applica filtri dalla URL
-                if (cityParam) {
-                    currentCityFilter = cityParam.toLowerCase();
-                    document.title = `Eventi a ${cityParam.charAt(0).toUpperCase() + cityParam.slice(1)} - Events InfoSardinya`;
-                    const pageHeroSubtitle = document.querySelector('.page-hero p');
+                // Applica filtri dalla URL (supporta sia city singola che cities multiple)
+                if (citiesParam) {
+                    // Filtro multi-città: cities=cagliari,castiadas,seulo
+                    currentCityFilter = citiesParam.toLowerCase();
+                    var areaName = citiesParam.split(',')[0];
+                    areaName = areaName.charAt(0).toUpperCase() + areaName.slice(1);
+                    document.title = 'Eventi nella zona di ' + areaName + ' - Events InfoSardinya';
+                    var pageHeroSubtitle = document.querySelector('.page-hero p');
                     if (pageHeroSubtitle) {
-                        pageHeroSubtitle.textContent = `Scopri tutti gli eventi a ${cityParam.charAt(0).toUpperCase() + cityParam.slice(1)}`;
+                        pageHeroSubtitle.textContent = 'Scopri tutti gli eventi nella zona di ' + areaName;
+                    }
+                } else if (cityParam) {
+                    currentCityFilter = cityParam.toLowerCase();
+                    document.title = 'Eventi a ' + cityParam.charAt(0).toUpperCase() + cityParam.slice(1) + ' - Events InfoSardinya';
+                    var pageHeroSubtitle = document.querySelector('.page-hero p');
+                    if (pageHeroSubtitle) {
+                        pageHeroSubtitle.textContent = 'Scopri tutti gli eventi a ' + cityParam.charAt(0).toUpperCase() + cityParam.slice(1);
                     }
                 }
 

@@ -628,19 +628,40 @@
                     // Aggiorna colore hero in base alla categoria
                     const heroSection = document.getElementById('event-hero');
                     const categoryColors = {
-                        'Musica': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                        'Arte': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                        'Sport': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
-                        'Gastronomia': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
+                        'CULTURA': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'TRADIZIONI': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'SAGRA': 'url("https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'FESTIVAL': 'url("https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'NATURA': 'url("https://images.pexels.com/photos/2396220/pexels-photo-2396220.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'FIERA': 'url("https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'BENESSERE': 'url("https://images.pexels.com/photos/3822864/pexels-photo-3822864.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'MUSICA': 'url("https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")',
+                        'SPETTACOLI': 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")'
                     };
                     const bgImage = categoryColors[event.badge_text] || 'url("https://images.pexels.com/photos/3716505/pexels-photo-3716505.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=800&w=1920")';
                     heroSection.style.backgroundImage = `linear-gradient(135deg, rgba(0, 119, 182, 0.7) 0%, rgba(0, 95, 163, 0.7) 100%), ${bgImage}`;
 
-                    // Inizializza la mappa se ci sono coordinate
+                    // Inizializza la mappa: usa coordinate se presenti, altrimenti geocodifica la località
+                    var mapContainer = document.querySelector('.map-container');
                     if (event.lat && event.lng) {
-                        setTimeout(() => {
+                        setTimeout(function() {
                             initializeMap(event.lat, event.lng, event.location);
                         }, 100);
+                    } else if (event.location) {
+                        // Geocodifica la località tramite OpenStreetMap Nominatim
+                        geocodeLocation(event.location).then(function(coords) {
+                            if (coords) {
+                                setTimeout(function() {
+                                    initializeMap(coords.lat, coords.lng, event.location);
+                                }, 100);
+                            } else {
+                                // Nasconde la sezione mappa se non si riesce a geocodificare
+                                mapContainer.style.display = 'none';
+                            }
+                        });
+                    } else {
+                        // Nessuna location — nascondi la mappa
+                        mapContainer.style.display = 'none';
                     }
                 } else {
                     console.error('Evento non trovato');
@@ -649,6 +670,25 @@
             } catch (error) {
                 console.error('Errore nel caricamento dell\'evento:', error);
                 document.body.innerHTML = '<div style="text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento dell\'evento</div>';
+            }
+        }
+
+        // Funzione per geocodificare una località tramite OpenStreetMap Nominatim
+        async function geocodeLocation(locationName) {
+            try {
+                var query = encodeURIComponent(locationName);
+                var response = await fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + query + '&limit=1');
+                var results = await response.json();
+                if (results && results.length > 0) {
+                    return {
+                        lat: parseFloat(results[0].lat),
+                        lng: parseFloat(results[0].lon)
+                    };
+                }
+                return null;
+            } catch (err) {
+                console.error('Errore geocoding:', err);
+                return null;
             }
         }
 

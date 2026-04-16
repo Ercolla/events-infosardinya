@@ -332,108 +332,76 @@
             <h2 class="section-title">Le Città della Sardegna</h2>
 
             <div class="locations-grid" id="locations-container">
-                <!-- Cagliari e dintorni -->
-                <div class="location-card" data-cities="cagliari,castiadas" onclick="window.location.href='eventi.html?cities=cagliari,castiadas'">
-                    <img src="img/cagliari.jpg" alt="Cagliari e dintorni" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Capitale della Sardegna</div>
-                        <h3 class="location-title">Cagliari e dintorni</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">🎭 Cultura e monumenti</div>
-                            <div class="location-info-item">🌊 Sul mare</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-cagliari"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
-                </div>
-
-                <!-- Sassari e Logudoro -->
-                <div class="location-card" data-cities="sassari,tissi" onclick="window.location.href='eventi.html?cities=sassari,tissi'">
-                    <img src="img/sassari.jpg" alt="Sassari e Logudoro" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Nord della Sardegna</div>
-                        <h3 class="location-title">Sassari e Logudoro</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">🎨 Sagre e tradizioni</div>
-                            <div class="location-info-item">📚 Storia e cultura</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-sassari"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
-                </div>
-
-                <!-- Oristano e Campidano -->
-                <div class="location-card" data-cities="oristano,ghilarza,ollastra,ussaramanna,tuili" onclick="window.location.href='eventi.html?cities=oristano,ghilarza,ollastra,ussaramanna,tuili'">
-                    <img src="img/oristano.jpg" alt="Oristano e Campidano" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Centro-Ovest della Sardegna</div>
-                        <h3 class="location-title">Oristano e Campidano</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">🍽️ Sagre e gastronomia</div>
-                            <div class="location-info-item">🎪 Fiere tradizionali</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-oristano"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
-                </div>
-
-                <!-- Nuoro e Barbagia -->
-                <div class="location-card" data-cities="nuoro,seulo,torpè,torpe" onclick="window.location.href='eventi.html?cities=nuoro,seulo,torpè,torpe'">
-                    <img src="img/nuoro.jpg" alt="Nuoro e Barbagia" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Cuore della Sardegna</div>
-                        <h3 class="location-title">Nuoro e Barbagia</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">🌿 Natura e parchi</div>
-                            <div class="location-info-item">🎭 Cultura e tradizioni</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-nuoro"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
-                </div>
-
-                <!-- Sulcis-Iglesiente -->
-                <div class="location-card" data-cities="sant'antioco,carbonia,iglesias,sulcis" onclick="window.location.href='eventi.html?cities=sant%27antioco,carbonia,iglesias'">
-                    <img src="img/carbonia.jpg" alt="Sulcis-Iglesiente" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Sud-Ovest della Sardegna</div>
-                        <h3 class="location-title">Sulcis-Iglesiente</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">⛪ Feste religiose</div>
-                            <div class="location-info-item">🏛️ Archeologia e storia</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-sulcis"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
-                </div>
-
-                <!-- Gallura -->
-                <div class="location-card" data-cities="olbia,gallura,tempio" onclick="window.location.href='eventi.html?cities=olbia,gallura,tempio'">
-                    <img src="img/gallura.jpg" alt="Gallura" class="location-image">
-                    <div class="location-body">
-                        <div class="location-category">📍 Nord-Est della Sardegna</div>
-                        <h3 class="location-title">Gallura</h3>
-                        <div class="location-info">
-                            <div class="location-info-item">⛱️ Mare e Costa Smeralda</div>
-                            <div class="location-info-item">🎉 Intrattenimento</div>
-                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
-                        </div>
-                        <div class="events-preview" id="preview-gallura"></div>
-                        <div class="location-cta">Vedi gli Eventi</div>
-                    </div>
+                <!-- Le card vengono generate dinamicamente da Supabase -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #686868;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+                    Caricamento luoghi...
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Script per popolare conteggi e preview eventi da Supabase -->
+    <!-- Script per generare dinamicamente le card luoghi da Supabase -->
     <script>
-        // Rimuove eventi duplicati (stesso titolo + stessa data)
+        // Immagini locali per località conosciute
+        var locationImages = {
+            'cagliari': 'img/cagliari.jpg',
+            'sassari': 'img/sassari.jpg',
+            'oristano': 'img/oristano.jpg',
+            'nuoro': 'img/nuoro.jpg',
+            'olbia': 'img/olbia.jpg',
+            'carbonia': 'img/carbonia.jpg',
+            'iglesias': 'img/carbonia.jpg',
+            'gallura': 'img/gallura.jpg',
+            'tempio': 'img/gallura.jpg'
+        };
+        var defaultImage = 'https://images.pexels.com/photos/3469410/pexels-photo-3469410.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800';
+
+        // Trova l'immagine migliore per una località
+        function getLocationImage(locationName) {
+            var loc = locationName.toLowerCase();
+            var keys = Object.keys(locationImages);
+            for (var i = 0; i < keys.length; i++) {
+                if (loc.includes(keys[i]) || keys[i].includes(loc)) {
+                    return locationImages[keys[i]];
+                }
+            }
+            return defaultImage;
+        }
+
+        // Calcola lo stato di un luogo in base alle date dei suoi eventi
+        function getLocationStatus(events) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            var hasToday = false;
+            var hasFuture = false;
+            var nextDate = null;
+
+            events.forEach(function(event) {
+                if (!event.date) return;
+                var start = new Date(event.date + 'T00:00:00');
+                var end = event.date_end ? new Date(event.date_end + 'T00:00:00') : start;
+
+                if (today >= start && today <= end) {
+                    hasToday = true;
+                } else if (start > today) {
+                    hasFuture = true;
+                    if (!nextDate || start < nextDate) nextDate = start;
+                }
+            });
+
+            if (hasToday) {
+                return { html: '<span style="color: #0a0; font-weight: 600;">📍 Evento in corso</span>', priority: 0 };
+            } else if (hasFuture) {
+                var formatted = nextDate.toLocaleDateString('it-IT', { day: 'numeric', month: 'long' });
+                return { html: '<span style="color: #0077B6; font-weight: 600;">📅 Prossimo: ' + formatted + '</span>', priority: 1 };
+            } else {
+                return { html: '<span style="color: #999;">Nessun evento previsto</span>', priority: 2 };
+            }
+        }
+
+        // Rimuove eventi duplicati
         function deduplicateEvents(events) {
             var seen = {};
             return events.filter(function(event) {
@@ -445,69 +413,125 @@
         }
 
         document.addEventListener('DOMContentLoaded', async function() {
+            var container = document.getElementById('locations-container');
+
             try {
-                // Carica e deduplica gli eventi dalla stessa sorgente di eventi.html
                 var rawEvents = await getAllEvents();
                 var allEvents = deduplicateEvents(rawEvents);
 
-                // Trova tutte le card con data-cities (multi-città per area)
-                var cards = document.querySelectorAll('.location-card[data-cities]');
+                // Raggruppa eventi per località (location univoca)
+                var locationMap = {};
+                allEvents.forEach(function(event) {
+                    var loc = (event.location || '').trim();
+                    if (!loc) return;
+                    // Normalizza il nome: prima lettera maiuscola
+                    var locKey = loc.charAt(0).toUpperCase() + loc.slice(1);
+                    if (!locationMap[locKey]) {
+                        locationMap[locKey] = [];
+                    }
+                    locationMap[locKey].push(event);
+                });
 
-                cards.forEach(function(card) {
-                    // Leggi la lista di città/località associate a questa area
-                    var citiesStr = card.getAttribute('data-cities').toLowerCase();
-                    var cityList = citiesStr.split(',').map(function(c) { return c.trim(); });
+                // Converti in array e calcola stato per ciascun luogo
+                var locations = Object.keys(locationMap).map(function(name) {
+                    var events = locationMap[name];
+                    var status = getLocationStatus(events);
 
-                    // Filtra eventi che matchano almeno una delle località dell'area
-                    var areaEvents = allEvents.filter(function(event) {
-                        var loc = (event.location || '').toLowerCase();
-                        return cityList.some(function(city) {
-                            return loc === city || loc.includes(city);
-                        });
+                    // Filtra eventi futuri o in corso per la preview
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    var activeEvents = events.filter(function(e) {
+                        if (!e.date) return false;
+                        var end = e.date_end ? new Date(e.date_end + 'T00:00:00') : new Date(e.date + 'T00:00:00');
+                        return end >= today;
+                    }).sort(function(a, b) {
+                        return new Date(a.date) - new Date(b.date);
                     });
 
-                    // Aggiorna il conteggio eventi
-                    var countEl = card.querySelector('.event-count-display');
-                    if (countEl) {
-                        if (areaEvents.length > 0) {
-                            countEl.innerHTML = '<span class="event-count-badge">' + areaEvents.length + '</span> eventi disponibili';
-                        } else {
-                            countEl.textContent = 'Nessun evento al momento';
-                        }
-                    }
-
-                    // Popola la preview con max 3 eventi più prossimi
-                    var previewEl = card.querySelector('.events-preview');
-                    if (previewEl && areaEvents.length > 0) {
-                        var upcoming = areaEvents
-                            .filter(function(e) { return e.date; })
-                            .sort(function(a, b) { return new Date(a.date) - new Date(b.date); })
-                            .slice(0, 3);
-
-                        if (upcoming.length > 0) {
-                            var html = '<div class="events-preview-title">Prossimi eventi</div>';
-                            html += '<ul class="events-preview-list">';
-                            upcoming.forEach(function(event) {
-                                var dateStr = '';
-                                if (event.date) {
-                                    var d = new Date(event.date + 'T00:00:00');
-                                    dateStr = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
-                                }
-                                html += '<li>';
-                                html += '<span class="preview-event-title">' + (event.title || '') + '</span>';
-                                html += '<span class="preview-event-date">' + dateStr + '</span>';
-                                html += '</li>';
-                            });
-                            html += '</ul>';
-                            previewEl.innerHTML = html;
-                        }
-                    }
+                    return {
+                        name: name,
+                        events: events,
+                        activeEvents: activeEvents,
+                        status: status,
+                        totalActive: activeEvents.length
+                    };
                 });
+
+                // Filtra: mostra solo luoghi con almeno 1 evento attivo o futuro
+                // (quelli senza eventi futuri vengono messi in fondo)
+                locations.sort(function(a, b) {
+                    // Prima per priorità stato (in corso > futuro > passato)
+                    if (a.status.priority !== b.status.priority) {
+                        return a.status.priority - b.status.priority;
+                    }
+                    // Poi per numero di eventi attivi (più eventi = prima)
+                    return b.totalActive - a.totalActive;
+                });
+
+                // Genera HTML
+                if (locations.length === 0) {
+                    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #686868;">' +
+                        '<div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>' +
+                        'Nessun evento disponibile al momento.' +
+                        '</div>';
+                    return;
+                }
+
+                var html = '';
+                locations.forEach(function(loc) {
+                    var img = getLocationImage(loc.name);
+                    var encodedCity = encodeURIComponent(loc.name);
+
+                    // Badge conteggio eventi attivi
+                    var countBadge = '';
+                    if (loc.totalActive > 0) {
+                        countBadge = '<span class="event-count-badge">' + loc.totalActive + '</span> eventi in programma';
+                    } else {
+                        countBadge = 'Solo eventi passati';
+                    }
+
+                    // Preview max 3 eventi prossimi
+                    var previewHtml = '';
+                    if (loc.activeEvents.length > 0) {
+                        var preview = loc.activeEvents.slice(0, 3);
+                        previewHtml = '<div class="events-preview">';
+                        previewHtml += '<div class="events-preview-title">Prossimi eventi</div>';
+                        previewHtml += '<ul class="events-preview-list">';
+                        preview.forEach(function(event) {
+                            var dateStr = '';
+                            if (event.date) {
+                                var d = new Date(event.date + 'T00:00:00');
+                                dateStr = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+                            }
+                            previewHtml += '<li>';
+                            previewHtml += '<span class="preview-event-title">' + (event.title || '') + '</span>';
+                            previewHtml += '<span class="preview-event-date">' + dateStr + '</span>';
+                            previewHtml += '</li>';
+                        });
+                        previewHtml += '</ul></div>';
+                    }
+
+                    html += '<div class="location-card" onclick="window.location.href=\'eventi.html?cities=' + encodedCity + '\'">';
+                    html += '<img src="' + img + '" alt="' + loc.name + '" class="location-image">';
+                    html += '<div class="location-body">';
+                    html += '<div class="location-category">📍 ' + loc.name + '</div>';
+                    html += '<h3 class="location-title">' + loc.name + '</h3>';
+                    html += '<div class="location-info">';
+                    html += '<div class="location-info-item">' + loc.status.html + '</div>';
+                    html += '<div class="location-info-item">' + countBadge + '</div>';
+                    html += '</div>';
+                    html += previewHtml;
+                    html += '<div class="location-cta">Vedi gli Eventi</div>';
+                    html += '</div></div>';
+                });
+
+                container.innerHTML = html;
+
             } catch (error) {
                 console.error('Errore nel caricamento eventi per luoghi:', error);
-                document.querySelectorAll('.event-count-display').forEach(function(el) {
-                    el.textContent = 'Eventi disponibili';
-                });
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #FF2122;">' +
+                    'Errore nel caricamento dei luoghi. Riprova più tardi.' +
+                    '</div>';
             }
         });
     </script>

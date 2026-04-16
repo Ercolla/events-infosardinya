@@ -1,9 +1,11 @@
 // navbar.js - Inietta dinamicamente la navbar basata su stato auth
+// Si aggiorna automaticamente quando lo stato di autenticazione cambia (es. dopo OAuth redirect)
 
 (function () {
-    const user = authGetCurrentUser();
 
-    const navbarHTML = `
+    // Genera l'HTML della navbar in base all'utente corrente
+    function buildNavbarHTML(user) {
+        return `
     <header class="bg-black sticky top-0 z-50 shadow-md">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-20">
@@ -57,6 +59,7 @@
         </nav>
     </header>
     `;
+    }
 
     function _navbarLoggedIn(user) {
         return `
@@ -129,48 +132,81 @@
         `;
     }
 
-    // ---- INIEZIONE NEL DOM ----
+    // ---- INIEZIONE E AGGIORNAMENTO NEL DOM ----
 
-    function injectNavbar() {
-        const target = document.getElementById('site-navbar');
-        if (target) {
-            target.outerHTML = navbarHTML;
-            setupListeners();
+    function renderNavbar(user) {
+        var html = buildNavbarHTML(user);
+        // Se la navbar è già stata iniettata, cerca il <header> per sostituirlo
+        var existing = document.querySelector('header.bg-black');
+        if (existing) {
+            existing.outerHTML = html;
+        } else {
+            // Prima iniezione: sostituisci il placeholder
+            var target = document.getElementById('site-navbar');
+            if (target) {
+                target.outerHTML = html;
+            }
         }
+        setupListeners();
     }
 
     // ---- EVENT LISTENERS (eseguiti dopo l'iniezione) ----
 
     function setupListeners() {
         // Hamburger toggle
-        const hamburger = document.getElementById('navbar-hamburger');
-        const mobileMenu = document.getElementById('navbar-mobile-menu');
+        var hamburger = document.getElementById('navbar-hamburger');
+        var mobileMenu = document.getElementById('navbar-mobile-menu');
         if (hamburger && mobileMenu) {
-            hamburger.addEventListener('click', () => {
+            hamburger.addEventListener('click', function() {
                 mobileMenu.classList.toggle('hidden');
             });
         }
 
         // Dropdown profilo toggle
-        const dropBtn = document.getElementById('profile-dropdown-btn');
-        const dropMenu = document.getElementById('profile-dropdown-menu');
+        var dropBtn = document.getElementById('profile-dropdown-btn');
+        var dropMenu = document.getElementById('profile-dropdown-menu');
         if (dropBtn && dropMenu) {
-            dropBtn.addEventListener('click', (e) => {
+            dropBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropMenu.classList.toggle('hidden');
             });
-            // Chiudi cliccando fuori
-            document.addEventListener('click', () => {
+            document.addEventListener('click', function() {
                 dropMenu.classList.add('hidden');
+            });
+        }
+    }
+
+    // ---- INIZIALIZZAZIONE ----
+
+    function initNavbar() {
+        // Render iniziale con dati sincroni da localStorage
+        var user = authGetCurrentUser();
+        renderNavbar(user);
+
+        // Ascolta i cambiamenti di stato auth da Supabase (es. dopo redirect OAuth)
+        if (typeof supabaseClient !== 'undefined' && supabaseClient.auth) {
+            supabaseClient.auth.onAuthStateChange(function(event, session) {
+                var updatedUser = null;
+                if (session && session.user) {
+                    var u = session.user;
+                    updatedUser = {
+                        id: u.id,
+                        nome: (u.user_metadata && u.user_metadata.nome) || (u.user_metadata && u.user_metadata.full_name) || u.email.split('@')[0],
+                        email: u.email,
+                        piano: 'starter'
+                    };
+                }
+                // Ri-renderizza la navbar con lo stato aggiornato
+                renderNavbar(updatedUser);
             });
         }
     }
 
     // Aspetta che il DOM sia pronto, poi inietta
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectNavbar);
+        document.addEventListener('DOMContentLoaded', initNavbar);
     } else {
-        injectNavbar();
+        initNavbar();
     }
 
 })();

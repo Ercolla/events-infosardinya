@@ -18,7 +18,7 @@ function authGetCurrentUser() {
         if (!u) return null;
         return {
             id: u.id,
-            nome: (u.user_metadata && u.user_metadata.nome) || u.email.split('@')[0],
+            nome: (u.user_metadata && u.user_metadata.nome) || (u.user_metadata && u.user_metadata.full_name) || u.email.split('@')[0],
             email: u.email,
             piano: 'starter'
         };

@@ -656,14 +656,14 @@
                     var mapContainer = document.querySelector('.map-container');
                     if (event.lat && event.lng) {
                         setTimeout(function() {
-                            initializeMap(event.lat, event.lng, event.location);
+                            initializeMap(event.lat, event.lng, event.location, event.date, event.date_end);
                         }, 100);
                     } else if (event.location) {
                         // Geocodifica la località tramite OpenStreetMap Nominatim
                         geocodeLocation(event.location).then(function(coords) {
                             if (coords) {
                                 setTimeout(function() {
-                                    initializeMap(coords.lat, coords.lng, event.location);
+                                    initializeMap(coords.lat, coords.lng, event.location, event.date, event.date_end);
                                 }, 100);
                             } else {
                                 // Nasconde la sezione mappa se non si riesce a geocodificare
@@ -703,8 +703,28 @@
             }
         }
 
+        // Genera la dicitura del marker in base alla data dell'evento
+        function getMarkerStatus(eventDate, eventDateEnd) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            var start = new Date(eventDate + 'T00:00:00');
+            var end = eventDateEnd ? new Date(eventDateEnd + 'T00:00:00') : start;
+
+            if (today > end) {
+                return { text: '📁 Archiviato', archived: true };
+            } else if (today >= start && today <= end) {
+                return { text: '📍 Evento in corso', archived: false };
+            } else {
+                var formatted = start.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+                return { text: '📅 In programma il ' + formatted, archived: false };
+            }
+        }
+
         // Funzione per inizializzare e aggiornare la mappa
-        function initializeMap(lat, lng, locationName) {
+        function initializeMap(lat, lng, locationName, eventDate, eventDateEnd) {
+            var status = getMarkerStatus(eventDate, eventDateEnd);
+
             // Se la mappa esiste, rimuovila
             if (map) {
                 map.remove();
@@ -727,9 +747,9 @@
                 map.removeLayer(currentMarker);
             }
 
-            // Aggiungi un nuovo marker
+            // Aggiungi un nuovo marker con stato dinamico
             currentMarker = L.marker([lat, lng]).addTo(map)
-                .bindPopup(`<strong>${locationName}</strong><br>Evento in corso`)
+                .bindPopup('<strong>' + locationName + '</strong><br>' + status.text)
                 .openPopup();
 
             // Aggiorna il nome della città nella sezione mappa

@@ -353,20 +353,66 @@
             'carbonia': 'img/carbonia.jpg',
             'iglesias': 'img/carbonia.jpg',
             'gallura': 'img/gallura.jpg',
-            'tempio': 'img/gallura.jpg'
+            'tempio': 'img/gallura.jpg',
+            'masainas': 'img/masainas.jpg',
+            'medio campidano': 'img/medio-campidano.jpg'
         };
-        var defaultImage = 'https://images.pexels.com/photos/3469410/pexels-photo-3469410.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800';
 
-        // Trova l'immagine migliore per una località
+        // Fallback generico Sardegna
+        var fallbackImage = 'https://images.pexels.com/photos/3469410/pexels-photo-3469410.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800';
+
+        // Pool di immagini Pexels della Sardegna (paesaggi, borghi, coste)
+        // Usate per località senza immagine locale — assegnate in modo deterministico
+        var sardegnaPhotos = [
+            'https://images.pexels.com/photos/2440061/pexels-photo-2440061.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/2387873/pexels-photo-2387873.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/1646883/pexels-photo-1646883.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/2670898/pexels-photo-2670898.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/2474689/pexels-photo-2474689.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/1483024/pexels-photo-1483024.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/994605/pexels-photo-994605.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/2132180/pexels-photo-2132180.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/3601425/pexels-photo-3601425.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/3757938/pexels-photo-3757938.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800',
+            'https://images.pexels.com/photos/2422259/pexels-photo-2422259.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800'
+        ];
+
+        // Hash semplice per assegnare un'immagine stabile a ogni località
+        function hashCode(str) {
+            var hash = 0;
+            for (var i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0;
+            }
+            return Math.abs(hash);
+        }
+
+        // Trova l'immagine migliore per una località:
+        // 1. Cerca tra le immagini locali (match parziale)
+        // 2. Se non trovata, assegna un'immagine dal pool Pexels in base al nome
         function getLocationImage(locationName) {
-            var loc = locationName.toLowerCase();
+            var loc = locationName.toLowerCase().trim();
+
+            // Controlla immagini locali (match parziale bidirezionale)
             var keys = Object.keys(locationImages);
             for (var i = 0; i < keys.length; i++) {
                 if (loc.includes(keys[i]) || keys[i].includes(loc)) {
                     return locationImages[keys[i]];
                 }
             }
-            return defaultImage;
+
+            // Nessuna immagine locale: assegna dal pool in modo deterministico
+            var index = hashCode(locationName) % sardegnaPhotos.length;
+            return sardegnaPhotos[index];
+        }
+
+        // Gestisce il fallback dell'immagine se il caricamento fallisce
+        function handleImageError(img) {
+            if (!img.dataset.fallbackApplied) {
+                img.dataset.fallbackApplied = 'true';
+                img.src = fallbackImage;
+            }
         }
 
         // Calcola lo stato di un luogo in base alle date dei suoi eventi
@@ -512,7 +558,7 @@
                     }
 
                     html += '<div class="location-card" onclick="window.location.href=\'eventi.html?cities=' + encodedCity + '\'">';
-                    html += '<img src="' + img + '" alt="' + loc.name + '" class="location-image">';
+                    html += '<img src="' + img + '" alt="' + loc.name + '" class="location-image" loading="lazy" onerror="handleImageError(this)">';
                     html += '<div class="location-body">';
                     html += '<div class="location-category">📍 ' + loc.name + '</div>';
                     html += '<h3 class="location-title">' + loc.name + '</h3>';

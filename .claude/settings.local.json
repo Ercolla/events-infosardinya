@@ -21,7 +21,10 @@
       "Bash(npm run *)",
       "Bash(curl -s 'https://jugdaypvqvpwvtfgrsqh.supabase.co/rest/v1/events?select=id,title,date,location,badge_text,image&order=id.asc' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Z2RheXB2cXZwd3Z0Zmdyc3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE5NzUsImV4cCI6MjA5MTY0Nzk3NX0.W3Yd3C5649sNyW_G2W_iQ7l9iYSUfflga7FwUbTf33c' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1Z2RheXB2cXZwd3Z0Zmdyc3FoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwNzE5NzUsImV4cCI6MjA5MTY0Nzk3NX0.W3Yd3C5649sNyW_G2W_iQ7l9iYSUfflga7FwUbTf33c')",
       "Bash(python -m json.tool)",
-      "Bash(curl *)"
+      "Bash(curl *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }

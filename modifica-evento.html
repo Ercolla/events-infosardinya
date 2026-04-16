@@ -301,7 +301,6 @@
         var user = authGetCurrentUser();
         var urlParams = new URLSearchParams(window.location.search);
         var eventId = urlParams.get('id');
-        var localId = urlParams.get('localId');
 
         var form = document.getElementById('form-modifica-evento');
         var loading = document.getElementById('loading');
@@ -332,26 +331,20 @@
                 return;
             }
 
-            // Verifica che l'utente sia il proprietario (controllo via localStorage)
-            var localEvents = eventiGetAll();
-            var isOwner = localEvents.some(function(e) {
-                var sbId = e.supabaseId || e.id;
-                return (String(sbId) === String(eventId)) && (e.authorId === user.id);
-            });
-
-            if (!isOwner) {
-                errorDiv.textContent = 'Non sei autorizzato a modificare questo evento.';
-                errorDiv.classList.remove('hidden');
-                loading.classList.add('hidden');
-                return;
-            }
-
             try {
                 // Carica dati aggiornati da Supabase
                 var evento = await getEventById(parseInt(eventId));
 
                 if (!evento) {
-                    errorDiv.textContent = 'Evento non trovato su Supabase.';
+                    errorDiv.textContent = 'Evento non trovato.';
+                    errorDiv.classList.remove('hidden');
+                    loading.classList.add('hidden');
+                    return;
+                }
+
+                // Verifica che l'utente sia il proprietario
+                if (evento.author_id !== user.id) {
+                    errorDiv.textContent = 'Non sei autorizzato a modificare questo evento.';
                     errorDiv.classList.remove('hidden');
                     loading.classList.add('hidden');
                     return;
@@ -472,23 +465,6 @@
                     .select();
 
                 if (error) throw error;
-
-                // Aggiorna anche il riferimento in localStorage
-                if (localId) {
-                    var localEvents = eventiGetAll();
-                    var idx = localEvents.findIndex(function(e) { return String(e.id) === String(localId); });
-                    if (idx !== -1) {
-                        localEvents[idx].titolo = titolo;
-                        localEvents[idx].dataInizio = dataEvento;
-                        localEvents[idx].dataFine = dataFineEvento || dataEvento;
-                        localEvents[idx].location = location;
-                        localEvents[idx].categoria = categoria;
-                        localEvents[idx].descrizione = descrizione;
-                        localEvents[idx].immagineUrl = image;
-                        localEvents[idx].modificatoIl = new Date().toISOString();
-                        localStorage.setItem('eis_events', JSON.stringify(localEvents));
-                    }
-                }
 
                 successDiv.textContent = 'Evento aggiornato con successo! Stai per essere reindirizzato...';
                 successDiv.classList.remove('hidden');

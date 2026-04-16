@@ -310,6 +310,7 @@
             var image = immagineUrl || categoryDefaultImages[categoria] || 'img/spettacoli.jpg';
 
             // Prepara l'oggetto per Supabase (mappato sulle colonne reali)
+            var user = authGetCurrentUser();
             var eventoSupabase = {
                 title: titolo,
                 description: descrizione,
@@ -319,7 +320,8 @@
                 time: orario || null,
                 capacity: capienza || 'Ingresso libero',
                 badge_text: categoria,
-                image: image
+                image: image,
+                author_id: user ? user.id : null
             };
 
             // Disabilita il bottone durante l'invio
@@ -334,29 +336,6 @@
 
                 if (error) {
                     throw error;
-                }
-
-                // Salva riferimento in localStorage per la pagina "Miei Eventi"
-                var user = authGetCurrentUser();
-                if (user) {
-                    var localEvents = eventiGetAll();
-                    localEvents.push({
-                        id: data[0].id,
-                        supabaseId: data[0].id,
-                        titolo: titolo,
-                        dataInizio: dataEvento,
-                        dataFine: dataFineEvento || dataEvento,
-                        location: location,
-                        categoria: categoria,
-                        descrizione: descrizione,
-                        immagineUrl: image,
-                        prezzo: '0.00',
-                        authorId: user.id,
-                        authorNome: user.nome,
-                        creatoIl: new Date().toISOString(),
-                        modificatoIl: new Date().toISOString()
-                    });
-                    localStorage.setItem('eis_events', JSON.stringify(localEvents));
                 }
 
                 successDiv.textContent = 'Evento pubblicato con successo! Stai per essere reindirizzato...';

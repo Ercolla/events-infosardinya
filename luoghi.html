@@ -10,9 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
     <script src="events-data.js"></script>
+    <script src="supabaseClient.js"></script>
 
     <style>
         * {
@@ -238,6 +242,66 @@
             font-size: 0.9rem;
         }
 
+        /* Preview eventi nella card */
+        .events-preview {
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .events-preview-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--color-sardegna-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .events-preview-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .events-preview-list li {
+            font-size: 0.8rem;
+            color: var(--color-text);
+            padding: 0.3rem 0;
+            border-bottom: 1px solid #f8f8f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .events-preview-list li:last-child {
+            border-bottom: none;
+        }
+
+        .preview-event-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-event-date {
+            font-size: 0.7rem;
+            color: var(--color-sardegna-blue);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .event-count-badge {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         @media (max-width: 768px) {
             .page-hero h1 {
                 font-size: 2rem;
@@ -269,7 +333,7 @@
 
             <div class="locations-grid" id="locations-container">
                 <!-- Cagliari -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=cagliari'">
+                <div class="location-card" data-city="cagliari" onclick="window.location.href='eventi.html?city=cagliari'">
                     <img src="https://images.pexels.com/photos/3050181/pexels-photo-3050181.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Cagliari" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Capitale della Sardegna</div>
@@ -277,14 +341,15 @@
                         <div class="location-info">
                             <div class="location-info-item">🎭 Cultura e musica</div>
                             <div class="location-info-item">🌊 Sul mare</div>
-                            <div class="location-info-item">12+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-cagliari"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
 
                 <!-- Sassari -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=sassari'">
+                <div class="location-card" data-city="sassari" onclick="window.location.href='eventi.html?city=sassari'">
                     <img src="https://images.pexels.com/photos/3559284/pexels-photo-3559284.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Sassari" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Nord della Sardegna</div>
@@ -292,14 +357,15 @@
                         <div class="location-info">
                             <div class="location-info-item">🎨 Città d'arte</div>
                             <div class="location-info-item">📚 Storia e cultura</div>
-                            <div class="location-info-item">8+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-sassari"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
 
                 <!-- Alghero -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=alghero'">
+                <div class="location-card" data-city="alghero" onclick="window.location.href='eventi.html?city=alghero'">
                     <img src="https://images.pexels.com/photos/3789101/pexels-photo-3789101.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Alghero" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Nord-ovest</div>
@@ -307,14 +373,15 @@
                         <div class="location-info">
                             <div class="location-info-item">🏖️ Spiagge bellissime</div>
                             <div class="location-info-item">🎵 Musica estiva</div>
-                            <div class="location-info-item">10+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-alghero"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
 
                 <!-- Olbia -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=olbia'">
+                <div class="location-card" data-city="olbia" onclick="window.location.href='eventi.html?city=olbia'">
                     <img src="https://images.pexels.com/photos/3789140/pexels-photo-3789140.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Olbia" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Costa Smeralda</div>
@@ -322,14 +389,15 @@
                         <div class="location-info">
                             <div class="location-info-item">⛱️ Porto principale</div>
                             <div class="location-info-item">🎉 Intrattenimento</div>
-                            <div class="location-info-item">15+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-olbia"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
 
                 <!-- Porto Cervo -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=porto-cervo'">
+                <div class="location-card" data-city="porto cervo" onclick="window.location.href='eventi.html?city=porto+cervo'">
                     <img src="https://images.pexels.com/photos/3789100/pexels-photo-3789100.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Porto Cervo" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Costa Smeralda</div>
@@ -337,14 +405,15 @@
                         <div class="location-info">
                             <div class="location-info-item">💎 Lusso esclusivo</div>
                             <div class="location-info-item">🌟 Spettacoli premium</div>
-                            <div class="location-info-item">9+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-porto-cervo"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
 
                 <!-- Nuoro -->
-                <div class="location-card" onclick="window.location.href='eventi.html?city=nuoro'">
+                <div class="location-card" data-city="nuoro" onclick="window.location.href='eventi.html?city=nuoro'">
                     <img src="https://images.pexels.com/photos/3789139/pexels-photo-3789139.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400" alt="Nuoro" class="location-image">
                     <div class="location-body">
                         <div class="location-category">📍 Centro della Sardegna</div>
@@ -352,14 +421,84 @@
                         <div class="location-info">
                             <div class="location-info-item">🎪 Tradizioni folcloriche</div>
                             <div class="location-info-item">🎭 Spettacoli culturali</div>
-                            <div class="location-info-item">7+ eventi</div>
+                            <div class="location-info-item event-count-display">⏳ Caricamento...</div>
                         </div>
+                        <div class="events-preview" id="preview-nuoro"></div>
                         <div class="location-cta">Vedi gli Eventi</div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Script per popolare conteggi e preview eventi da Supabase -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Carica tutti gli eventi dalla stessa sorgente di eventi.html (Supabase)
+                const allEvents = await getAllEvents();
+
+                // Trova tutte le card con data-city
+                const cards = document.querySelectorAll('.location-card[data-city]');
+
+                cards.forEach(function(card) {
+                    const cityName = card.getAttribute('data-city').toLowerCase();
+
+                    // Filtra eventi per questa città (case-insensitive, con includes)
+                    const cityEvents = allEvents.filter(function(event) {
+                        const loc = (event.location || '').toLowerCase();
+                        return loc === cityName || loc.includes(cityName);
+                    });
+
+                    // Aggiorna il conteggio eventi
+                    var countEl = card.querySelector('.event-count-display');
+                    if (countEl) {
+                        if (cityEvents.length > 0) {
+                            countEl.innerHTML = '<span class="event-count-badge">' + cityEvents.length + '</span> eventi disponibili';
+                        } else {
+                            countEl.textContent = 'Nessun evento al momento';
+                        }
+                    }
+
+                    // Popola la preview con max 3 eventi più prossimi
+                    var previewId = 'preview-' + cityName.replace(/\s+/g, '-');
+                    var previewEl = document.getElementById(previewId);
+                    if (previewEl && cityEvents.length > 0) {
+                        // Ordina per data crescente e prendi i primi 3
+                        var upcoming = cityEvents
+                            .filter(function(e) { return e.date; })
+                            .sort(function(a, b) { return new Date(a.date) - new Date(b.date); })
+                            .slice(0, 3);
+
+                        if (upcoming.length > 0) {
+                            var html = '<div class="events-preview-title">Prossimi eventi</div>';
+                            html += '<ul class="events-preview-list">';
+                            upcoming.forEach(function(event) {
+                                // Formatta la data in italiano
+                                var dateStr = '';
+                                if (event.date) {
+                                    var d = new Date(event.date + 'T00:00:00');
+                                    dateStr = d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' });
+                                }
+                                html += '<li>';
+                                html += '<span class="preview-event-title">' + (event.title || '') + '</span>';
+                                html += '<span class="preview-event-date">' + dateStr + '</span>';
+                                html += '</li>';
+                            });
+                            html += '</ul>';
+                            previewEl.innerHTML = html;
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Errore nel caricamento eventi per luoghi:', error);
+                // In caso di errore, mostra un fallback
+                document.querySelectorAll('.event-count-display').forEach(function(el) {
+                    el.textContent = 'Eventi disponibili';
+                });
+            }
+        });
+    </script>
 
     <!-- Footer -->
     <footer class="footer">

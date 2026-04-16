@@ -156,60 +156,21 @@
                                class="form-input" placeholder="••••••••">
                     </div>
 
-                    <!-- Selezione Piano -->
+                    <!-- Piano -->
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-4">Scegli il tuo piano</label>
-
-                        <div class="space-y-3">
-
-                            <!-- Starter -->
-                            <button type="button" class="piano-option" data-piano="starter">
-                                <div class="piano-card active" id="card-starter">
-                                    <div class="piano-info">
-                                        <div class="piano-title">Starter</div>
-                                        <div class="piano-price">Gratis</div>
-                                        <div class="piano-desc">Perfetto per iniziare</div>
-                                    </div>
-                                    <div class="piano-radio">
-                                        <div class="w-5 h-5 rounded-full border-2 border-red-500 flex items-center justify-center">
-                                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                        </div>
-                                    </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Il tuo piano</label>
+                        <div class="piano-card active">
+                            <div class="piano-info">
+                                <div class="piano-title">Starter</div>
+                                <div class="piano-price">Gratis</div>
+                                <div class="piano-desc">Pubblica i tuoi eventi gratuitamente</div>
+                            </div>
+                            <div class="piano-radio">
+                                <div class="w-5 h-5 rounded-full border-2 border-red-500 flex items-center justify-center">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
                                 </div>
-                            </button>
-
-                            <!-- Professional -->
-                            <button type="button" class="piano-option" data-piano="professional">
-                                <div class="piano-card" id="card-professional">
-                                    <div class="piano-info">
-                                        <div class="piano-title">Professional</div>
-                                        <div class="piano-price">€29/mese</div>
-                                        <div class="piano-desc">Più eventi e visibilità</div>
-                                    </div>
-                                    <div class="piano-radio">
-                                        <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                        </div>
-                                    </div>
-                                </div>
-                            </button>
-
-                            <!-- Premium -->
-                            <button type="button" class="piano-option" data-piano="premium">
-                                <div class="piano-card" id="card-premium">
-                                    <div class="piano-info">
-                                        <div class="piano-title">Premium</div>
-                                        <div class="piano-price">€79/mese</div>
-                                        <div class="piano-desc">Massima visibilità e support</div>
-                                    </div>
-                                    <div class="piano-radio">
-                                        <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                        </div>
-                                    </div>
-                                </div>
-                            </button>
-
+                            </div>
                         </div>
-
                         <input type="hidden" id="piano" name="piano" value="starter">
                     </div>
 
@@ -243,34 +204,6 @@
     </section>
 
     <script>
-        let pianoSelezionato = 'starter';
-
-        // Event listener per selezione piano
-        document.querySelectorAll('.piano-option').forEach(btn => {
-            btn.addEventListener('click', function() {
-                pianoSelezionato = this.getAttribute('data-piano');
-                document.getElementById('piano').value = pianoSelezionato;
-
-                // Aggiorna UI
-                document.querySelectorAll('.piano-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                document.getElementById('card-' + pianoSelezionato).classList.add('active');
-
-                // Aggiorna radio buttons
-                document.querySelectorAll('.piano-card').forEach(card => {
-                    const radio = card.querySelector('div div div:last-child');
-                    if (radio) {
-                        radio.innerHTML = '';
-                    }
-                });
-                const activeRadio = document.getElementById('card-' + pianoSelezionato).querySelector('div div div:last-child');
-                if (activeRadio) {
-                    activeRadio.innerHTML = '<div class="w-3 h-3 rounded-full bg-red-500"></div>';
-                }
-            });
-        });
-
         // Submit form
         document.getElementById('register-form').addEventListener('submit', function(e) {
             e.preventDefault();

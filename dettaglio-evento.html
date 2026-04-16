@@ -608,10 +608,21 @@
                     // Aggiorna breadcrumb
                     document.getElementById('breadcrumb-event').textContent = event.title;
 
+                    // Formatta le date per la visualizzazione
+                    function formatDateIT(dateStr) {
+                        if (!dateStr) return '';
+                        var d = new Date(dateStr + 'T00:00:00');
+                        return d.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+                    }
+                    var dateDisplay = formatDateIT(event.date);
+                    if (event.date_end && event.date_end !== event.date) {
+                        dateDisplay = 'Dal ' + formatDateIT(event.date) + ' al ' + formatDateIT(event.date_end);
+                    }
+
                     // Aggiorna hero
                     document.getElementById('event-badge').textContent = event.badge_text || '';
                     document.getElementById('event-title').textContent = event.title;
-                    document.getElementById('hero-date').textContent = event.date;
+                    document.getElementById('hero-date').textContent = dateDisplay;
                     document.getElementById('hero-location').textContent = event.location;
                     document.getElementById('hero-category').textContent = event.badge_text || '';
 
@@ -620,7 +631,7 @@
                     document.getElementById('event-description').textContent = event.description || 'Descrizione non disponibile';
 
                     // Aggiorna sidebar
-                    document.getElementById('sidebar-date').textContent = event.date;
+                    document.getElementById('sidebar-date').textContent = dateDisplay;
                     document.getElementById('sidebar-time').textContent = event.time || 'Orario non specificato';
                     document.getElementById('sidebar-location').textContent = event.location;
                     document.getElementById('sidebar-capacity').textContent = event.capacity || 'Posti disponibili';

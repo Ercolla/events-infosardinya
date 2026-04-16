@@ -340,7 +340,7 @@
                         <div class="event-category">${event.badge_text || ''}</div>
                         <h3 class="event-title">${event.title}</h3>
                         <div class="event-info">
-                            <div class="event-info-item">📅 ${event.date}</div>
+                            <div class="event-info-item">📅 ${event.date_end && event.date_end !== event.date ? 'Dal ' + new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT') + ' al ' + new Date(event.date_end + 'T00:00:00').toLocaleDateString('it-IT') : new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT')}</div>
                             <div class="event-info-item">📍 ${event.location}</div>
                             <div class="event-info-item">👥 ${event.capacity || 'Posti disponibili'}</div>
                         </div>

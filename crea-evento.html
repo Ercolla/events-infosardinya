@@ -142,14 +142,47 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Scelta tipo durata -->
+                    <div class="mb-6">
+                        <label class="form-label">Durata evento *</label>
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 500;">
+                                <input type="radio" name="tipoDurata" value="singolo" checked
+                                       onchange="toggleDurata()" style="accent-color: #FF2122;">
+                                Un solo giorno
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 500;">
+                                <input type="radio" name="tipoDurata" value="periodo"
+                                       onchange="toggleDurata()" style="accent-color: #FF2122;">
+                                Più giorni (dal / al)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6" id="date-singolo">
                         <div>
                             <label class="form-label">Data *</label>
-                            <input type="date" id="dataEvento" name="dataEvento" required class="form-input">
+                            <input type="date" id="dataEvento" name="dataEvento" class="form-input">
                         </div>
                         <div>
                             <label class="form-label">Orario</label>
                             <input type="text" id="orario" name="orario"
+                                   class="form-input" placeholder="Es. 20:00 - 23:00">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6" id="date-periodo" style="display: none;">
+                        <div>
+                            <label class="form-label">Dal *</label>
+                            <input type="date" id="dataInizio" name="dataInizio" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Al *</label>
+                            <input type="date" id="dataFine" name="dataFine" class="form-input">
+                        </div>
+                        <div>
+                            <label class="form-label">Orario</label>
+                            <input type="text" id="orarioPeriodo" name="orarioPeriodo"
                                    class="form-input" placeholder="Es. 20:00 - 23:00">
                         </div>
                     </div>
@@ -197,6 +230,20 @@
     </section>
 
     <script>
+        // Toggle visibilità campi data singola / periodo
+        function toggleDurata() {
+            var tipo = document.querySelector('input[name="tipoDurata"]:checked').value;
+            var singolo = document.getElementById('date-singolo');
+            var periodo = document.getElementById('date-periodo');
+            if (tipo === 'singolo') {
+                singolo.style.display = '';
+                periodo.style.display = 'none';
+            } else {
+                singolo.style.display = 'none';
+                periodo.style.display = '';
+            }
+        }
+
         // Immagini predefinite per categoria
         var categoryDefaultImages = {
             'CULTURA': 'img/arte.jpg',
@@ -218,8 +265,19 @@
             var submitBtn = this.querySelector('button[type="submit"]');
 
             var titolo = document.getElementById('titolo').value.trim();
-            var dataEvento = document.getElementById('dataEvento').value;
-            var orario = document.getElementById('orario').value.trim();
+            var tipoDurata = document.querySelector('input[name="tipoDurata"]:checked').value;
+            var dataEvento, dataFineEvento, orario;
+
+            if (tipoDurata === 'singolo') {
+                dataEvento = document.getElementById('dataEvento').value;
+                dataFineEvento = null;
+                orario = document.getElementById('orario').value.trim();
+            } else {
+                dataEvento = document.getElementById('dataInizio').value;
+                dataFineEvento = document.getElementById('dataFine').value;
+                orario = document.getElementById('orarioPeriodo').value.trim();
+            }
+
             var location = document.getElementById('location').value.trim();
             var categoria = document.getElementById('categoria').value;
             var capienza = document.getElementById('capienza').value.trim();
@@ -234,6 +292,20 @@
                 return;
             }
 
+            if (tipoDurata === 'periodo' && !dataFineEvento) {
+                errorDiv.textContent = 'Per un evento di più giorni, indica anche la data di fine.';
+                errorDiv.classList.remove('hidden');
+                successDiv.classList.add('hidden');
+                return;
+            }
+
+            if (dataFineEvento && dataFineEvento < dataEvento) {
+                errorDiv.textContent = 'La data di fine non può essere precedente alla data di inizio.';
+                errorDiv.classList.remove('hidden');
+                successDiv.classList.add('hidden');
+                return;
+            }
+
             // Immagine: usa URL fornito oppure immagine predefinita per categoria
             var image = immagineUrl || categoryDefaultImages[categoria] || 'img/spettacoli.jpg';
 
@@ -242,6 +314,7 @@
                 title: titolo,
                 description: descrizione,
                 date: dataEvento,
+                date_end: dataFineEvento || null,
                 location: location,
                 time: orario || null,
                 capacity: capienza || 'Ingresso libero',
@@ -272,7 +345,7 @@
                         supabaseId: data[0].id,
                         titolo: titolo,
                         dataInizio: dataEvento,
-                        dataFine: dataEvento,
+                        dataFine: dataFineEvento || dataEvento,
                         location: location,
                         categoria: categoria,
                         descrizione: descrizione,

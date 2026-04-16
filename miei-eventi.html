@@ -288,10 +288,15 @@
                 var desc = sb ? (sb.description || '') : (evento.descrizione || '');
                 var eventId = sb ? sb.id : evento.id;
 
+                var dateEnd = sb ? sb.date_end : (evento.dataFine || '');
                 var dataFormatted = '';
                 if (data) {
                     var d = new Date(data + 'T00:00:00');
                     dataFormatted = d.toLocaleDateString('it-IT');
+                    if (dateEnd && dateEnd !== data) {
+                        var d2 = new Date(dateEnd + 'T00:00:00');
+                        dataFormatted = 'Dal ' + dataFormatted + ' al ' + d2.toLocaleDateString('it-IT');
+                    }
                 }
 
                 html += '<div class="event-item">' +

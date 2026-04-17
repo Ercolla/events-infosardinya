@@ -33,12 +33,12 @@ function authIsLoggedIn() {
 
 // ---------- REGISTRAZIONE ----------
 
-async function authRegister(nome, email, password) {
+async function authRegister(nome, email, password, newsletterOptIn) {
     var result = await supabaseClient.auth.signUp({
         email: email,
         password: password,
         options: {
-            data: { nome: nome, piano: 'starter' },
+            data: { nome: nome, piano: 'starter', newsletter_opt_in: !!newsletterOptIn },
             emailRedirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'login.html?verified=1'
         }
     });

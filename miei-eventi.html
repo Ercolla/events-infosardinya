@@ -367,6 +367,24 @@
                 <!-- Gli eventi verranno caricati qui con JavaScript -->
             </div>
 
+            <!-- Sezione Preferenze Newsletter -->
+            <div id="newsletter-section" class="bg-white rounded-lg shadow-lg p-6 mt-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Newsletter Settimanale</h3>
+                        <p class="text-sm text-gray-500 mt-1">Ricevi ogni settimana un riepilogo degli eventi futuri in Sardegna direttamente nella tua email.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer flex-shrink-0 ml-4">
+                        <input type="checkbox" id="newsletter-toggle" class="sr-only peer" onchange="toggleNewsletter(this.checked)">
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0077B6]"></div>
+                    </label>
+                </div>
+                <div id="newsletter-status" class="hidden text-sm p-2 rounded mt-2"></div>
+                <p class="text-xs text-gray-400 mt-3">
+                    Puoi disiscriverti in qualsiasi momento. Per dettagli, consulta la nostra <a href="privacy-policy.html#newsletter" class="text-blue-600 underline">Privacy Policy</a>.
+                </p>
+            </div>
+
             <!-- Zona pericolosa: eliminazione account -->
             <div class="danger-zone">
                 <h3>⚠ Zona Pericolosa</h3>
@@ -483,6 +501,45 @@
 
         // Carica gli eventi al caricamento della pagina
         loadUserEvents();
+
+        // ---------- NEWSLETTER TOGGLE ----------
+
+        // Carica stato attuale della newsletter dai metadata utente
+        async function loadNewsletterPreference() {
+            var { data: { user: supaUser } } = await supabaseClient.auth.getUser();
+            if (supaUser && supaUser.user_metadata) {
+                var optIn = supaUser.user_metadata.newsletter_opt_in || false;
+                document.getElementById('newsletter-toggle').checked = optIn;
+            }
+        }
+
+        // Aggiorna preferenza newsletter nei metadata utente Supabase
+        async function toggleNewsletter(checked) {
+            var statusEl = document.getElementById('newsletter-status');
+            try {
+                var { error } = await supabaseClient.auth.updateUser({
+                    data: { newsletter_opt_in: checked }
+                });
+
+                if (error) throw error;
+
+                statusEl.className = 'text-sm p-2 rounded mt-2 bg-green-50 text-green-700 border border-green-200';
+                statusEl.textContent = checked
+                    ? 'Newsletter attivata! Riceverai il riepilogo settimanale degli eventi.'
+                    : 'Newsletter disattivata. Non riceverai più il riepilogo settimanale.';
+                statusEl.classList.remove('hidden');
+                setTimeout(function() { statusEl.classList.add('hidden'); }, 4000);
+            } catch (err) {
+                console.error('Errore aggiornamento newsletter:', err);
+                // Ripristina il toggle allo stato precedente
+                document.getElementById('newsletter-toggle').checked = !checked;
+                statusEl.className = 'text-sm p-2 rounded mt-2 bg-red-50 text-red-700 border border-red-200';
+                statusEl.textContent = 'Errore nel salvataggio. Riprova più tardi.';
+                statusEl.classList.remove('hidden');
+            }
+        }
+
+        loadNewsletterPreference();
 
         // ---------- ELIMINAZIONE ACCOUNT ----------
 

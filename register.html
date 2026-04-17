@@ -233,13 +233,25 @@
                         </div>
 
                         <!-- Consenso GDPR -->
-                        <div class="mb-6">
+                        <div class="mb-4">
                             <label class="flex items-start gap-3 cursor-pointer">
                                 <input type="checkbox" id="gdpr-consent" required
                                        class="mt-1 w-4 h-4 rounded border-gray-300 text-red-500 focus:ring-red-500 flex-shrink-0">
                                 <span class="text-sm text-gray-600 leading-relaxed">
                                     Ho letto e accetto la <a href="privacy-policy.html" target="_blank" class="text-red-500 hover:text-red-700 font-semibold underline">Privacy Policy</a>
-                                    e acconsento al trattamento dei miei dati personali per la creazione e gestione dell'account.
+                                    e acconsento al trattamento dei miei dati personali per la creazione e gestione dell'account e, se selezionata, per l'invio della newsletter settimanale sugli eventi.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Iscrizione Newsletter (opzionale) -->
+                        <div class="mb-6">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" id="newsletter-opt-in"
+                                       class="mt-1 w-4 h-4 rounded border-gray-300 text-red-500 focus:ring-red-500 flex-shrink-0">
+                                <span class="text-sm text-gray-600 leading-relaxed">
+                                    Desidero iscrivermi alla <strong>newsletter settimanale</strong> per ricevere i prossimi eventi in Sardegna direttamente nella mia email.
+                                    <span class="block text-xs text-gray-400 mt-1">Facoltativo — potrai disiscriverti in qualsiasi momento dal tuo profilo o tramite il link nella email.</span>
                                 </span>
                             </label>
                         </div>
@@ -335,7 +347,8 @@
             submitBtn.disabled = true;
             submitBtn.textContent = 'Registrazione in corso...';
 
-            var result = await authRegister(nome, email, password);
+            var newsletterOptIn = document.getElementById('newsletter-opt-in').checked;
+            var result = await authRegister(nome, email, password, newsletterOptIn);
 
             if (result.ok) {
                 if (result.needsConfirmation) {

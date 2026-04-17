@@ -1,7 +1,7 @@
 // Edge Function: send-confirmation-email
 // Invia l'email di conferma Double Opt-In per la newsletter
-// Mittente: events@infosardinya.it (registrazione/conferma)
-// Nota: per la newsletter settimanale si userà newsletter@infosardinya.it
+// Mittente: newsletter@infosardinya.it (conferma iscrizione e newsletter)
+// Reply-to: events@infosardinya.it (risposte degli utenti)
 // Deploy: npx supabase functions deploy send-confirmation-email
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -11,8 +11,10 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // ============================================
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 // Mittente produzione — dominio infosardinya.it verificato su Resend
-const FROM_EMAIL = "events@infosardinya.it";
-const FROM_NAME = "InfoSardinya Eventi";
+const FROM_EMAIL = "newsletter@infosardinya.it";
+const FROM_NAME = "Newsletter InfoSardinya";
+// Reply-to — le risposte degli utenti vanno a events@
+const REPLY_TO = "events@infosardinya.it";
 
 // URL base del sito (GitHub Pages)
 const SITE_URL = "https://ercolla.github.io/events-infosardinya";
@@ -146,8 +148,9 @@ serve(async (req: Request) => {
       },
       body: JSON.stringify({
         from: `${FROM_NAME} <${FROM_EMAIL}>`,
+        reply_to: REPLY_TO,
         to: [email],
-        subject: "Non perderti nessun evento — Conferma la tua iscrizione",
+        subject: "Non perderti nessun evento",
         html: emailHtml,
       }),
     });

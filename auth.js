@@ -98,6 +98,26 @@ async function authLogout() {
     window.location.href = 'index.html';
 }
 
+// ---------- GESTIONE RUOLO ADMIN ----------
+
+// Lista delle email autorizzate come admin
+var ADMIN_EMAILS = ['ercolla@gmail.com'];
+
+function authIsAdmin() {
+    var user = authGetCurrentUser();
+    if (!user || !user.email) return false;
+    return ADMIN_EMAILS.indexOf(user.email) !== -1;
+}
+
+function authRequireAdmin(redirectUrl) {
+    if (redirectUrl === undefined) redirectUrl = 'index.html';
+    if (!authIsLoggedIn() || !authIsAdmin()) {
+        window.location.href = redirectUrl;
+        return false;
+    }
+    return true;
+}
+
 // ---------- PROTEZIONE PAGINE (GUARD) ----------
 
 function authRequireLogin(redirectUrl) {

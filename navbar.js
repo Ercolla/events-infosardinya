@@ -81,6 +81,7 @@
                    class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 transition">
                     I miei eventi
                 </a>
+                ${authIsAdmin() ? '<a href="admin-dashboard.html" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 hover:text-red-500 transition font-semibold">Admin Dashboard</a>' : ''}
                 <button onclick="authLogout()"
                         class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition border-t border-gray-100">
                     Logout
@@ -114,6 +115,7 @@
            class="block text-white hover:text-red-500 py-2 text-sm font-medium">Crea Evento</a>
         <a href="miei-eventi.html"
            class="block text-white hover:text-red-500 py-2 text-sm font-medium">I miei eventi</a>
+        ${authIsAdmin() ? '<a href="admin-dashboard.html" class="block text-yellow-400 hover:text-yellow-300 py-2 text-sm font-medium font-semibold">Admin Dashboard</a>' : ''}
         <button onclick="authLogout()"
                 class="block text-red-400 hover:text-red-500 py-2 text-sm font-medium w-full text-left">
             Logout

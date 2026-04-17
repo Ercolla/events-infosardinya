@@ -88,3 +88,68 @@ async function getEventsByCity(city) {
         return [];
     }
 }
+
+// ---------- FUNZIONI CRUD ADMIN ----------
+
+// Crea un nuovo evento
+async function createEvent(eventData) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('events')
+            .insert([eventData])
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Errore nella creazione dell\'evento:', error);
+            return { ok: false, error: error.message };
+        }
+
+        return { ok: true, data: data };
+    } catch (err) {
+        console.error('Errore nella connessione a Supabase:', err);
+        return { ok: false, error: err.message };
+    }
+}
+
+// Aggiorna un evento esistente
+async function updateEvent(id, updatedData) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('events')
+            .update(updatedData)
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Errore nell\'aggiornamento dell\'evento:', error);
+            return { ok: false, error: error.message };
+        }
+
+        return { ok: true, data: data };
+    } catch (err) {
+        console.error('Errore nella connessione a Supabase:', err);
+        return { ok: false, error: err.message };
+    }
+}
+
+// Elimina un evento
+async function deleteEvent(id) {
+    try {
+        const { error } = await supabaseClient
+            .from('events')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('Errore nell\'eliminazione dell\'evento:', error);
+            return { ok: false, error: error.message };
+        }
+
+        return { ok: true };
+    } catch (err) {
+        console.error('Errore nella connessione a Supabase:', err);
+        return { ok: false, error: err.message };
+    }
+}

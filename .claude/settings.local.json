@@ -25,7 +25,10 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(python3 -c \"import json,sys; [print\\(e['location']\\) for e in json.loads\\(sys.stdin.read\\(\\)\\)]\")"
+      "Bash(python3 -c \"import json,sys; [print\\(e['location']\\) for e in json.loads\\(sys.stdin.read\\(\\)\\)]\")",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(node scrape-images.js)"
     ]
   }
 }

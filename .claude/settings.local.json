@@ -30,7 +30,8 @@
       "Bash(npm install *)",
       "Bash(node scrape-images.js)",
       "Bash(wc -l \"C:\\\\eventsIinfosardinyaIt_CLAUDCODEMAX\"/*.html)",
-      "Bash(npx supabase *)"
+      "Bash(npx supabase *)",
+      "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.js)"
     ]
   }
 }

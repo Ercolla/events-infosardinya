@@ -95,6 +95,69 @@
             width: 20px;
             height: 20px;
         }
+
+        /* Animazione fade-in per il messaggio di benvenuto */
+        .welcome-fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Spunta verde animata */
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: scaleIn 0.4s ease-out forwards;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .checkmark-icon {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: drawCheck 0.5s 0.3s ease-out forwards;
+        }
+
+        @keyframes drawCheck {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* Loader puntini */
+        .welcome-dots span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 3px;
+            border-radius: 50%;
+            background: #22c55e;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .welcome-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .welcome-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -187,6 +250,21 @@
 
             </div>
 
+            <!-- Messaggio di benvenuto (nascosto di default) -->
+            <div id="welcome-container" class="hidden bg-white rounded-lg shadow-lg p-8 text-center welcome-fade-in">
+                <div class="checkmark-circle">
+                    <svg class="checkmark-icon" viewBox="0 0 24 24">
+                        <polyline points="6 12 10 16 18 8"></polyline>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Accesso completato!</h2>
+                <p class="text-lg text-gray-600 mb-4">Benvenuto/a, <span id="welcome-user-name" class="font-semibold text-green-600"></span></p>
+                <p class="text-sm text-gray-400 mb-3">Reindirizzamento in corso</p>
+                <div class="welcome-dots">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -229,8 +307,22 @@
             var result = await authLogin(email, password);
 
             if (result.ok) {
+                // Mostra schermata di benvenuto prima del redirect
                 var redirect = params.get('redirect') || 'index.html';
-                window.location.href = redirect;
+                var user = authGetCurrentUser();
+                var userName = user ? user.nome : email.split('@')[0];
+
+                // Nascondi la card del form e mostra il benvenuto
+                document.querySelector('.bg-white.rounded-lg.shadow-lg.p-8').style.display = 'none';
+                var welcomeEl = document.getElementById('welcome-container');
+                document.getElementById('welcome-user-name').textContent = userName;
+                welcomeEl.classList.remove('hidden');
+
+                // Attendi 2.5 secondi prima del redirect
+                setTimeout(function() {
+                    window.location.href = redirect;
+                }, 2500);
+                return;
             } else {
                 errorMsg.textContent = result.error;
                 errorMsg.classList.remove('hidden');

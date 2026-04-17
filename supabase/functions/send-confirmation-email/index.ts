@@ -8,9 +8,9 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // CONFIGURAZIONE
 // ============================================
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
-// Mittente di test Resend (cambiare con dominio verificato in produzione)
-const FROM_EMAIL = "onboarding@resend.dev";
-const FROM_NAME = "Events InfoSardinya";
+// Mittente produzione — dominio infosardinya.it verificato su Resend
+const FROM_EMAIL = "events@infosardinya.it";
+const FROM_NAME = "InfoSardinya Eventi";
 
 // URL base del sito (GitHub Pages)
 const SITE_URL = "https://ercolla.github.io/events-infosardinya";

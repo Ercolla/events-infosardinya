@@ -13,9 +13,9 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
 
-// Indirizzo mittente verificato su Resend
-const FROM_EMAIL = "newsletter@eventiinsardegna.it";
-const FROM_NAME = "Eventi in Sardegna";
+// Indirizzo mittente produzione — dominio infosardinya.it verificato su Resend
+const FROM_EMAIL = "newsletter@infosardinya.it";
+const FROM_NAME = "Newsletter InfoSardinya";
 
 console.log("Newsletter Edge Function avviata");
 

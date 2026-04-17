@@ -81,7 +81,7 @@ async function authLoginWithGoogle() {
     var result = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'index.html'
+            redirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'login.html?provider=google'
         }
     });
 

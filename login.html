@@ -165,7 +165,12 @@
     <div id="site-navbar"></div>
 
     <script>
-        authRedirectIfLoggedIn('index.html');
+        // Se torniamo da Google OAuth, NON fare redirect automatico
+        // — mostriamo prima la schermata di benvenuto
+        var _loginParams = new URLSearchParams(window.location.search);
+        if (_loginParams.get('provider') !== 'google') {
+            authRedirectIfLoggedIn('index.html');
+        }
     </script>
 
     <!-- PAGE CONTAINER -->
@@ -274,6 +279,35 @@
         if (params.get('verified') === '1') {
             document.getElementById('verified-msg').classList.remove('hidden');
             window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Gestione ritorno da Google OAuth — mostra schermata di benvenuto
+        if (params.get('provider') === 'google') {
+            // Pulisci URL dal parametro
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            // Attendi che Supabase processi il token dalla URL
+            supabaseClient.auth.onAuthStateChange(function(event, session) {
+                if (session && session.user) {
+                    var user = session.user;
+                    var userName = (user.user_metadata && user.user_metadata.full_name)
+                        || (user.user_metadata && user.user_metadata.nome)
+                        || user.email.split('@')[0];
+
+                    // Nascondi il form e mostra il benvenuto (stessa logica del login email)
+                    var formCard = document.querySelector('.bg-white.rounded-lg.shadow-lg.p-8');
+                    if (formCard) formCard.style.display = 'none';
+
+                    var welcomeEl = document.getElementById('welcome-container');
+                    document.getElementById('welcome-user-name').textContent = userName;
+                    welcomeEl.classList.remove('hidden');
+
+                    // Redirect dopo 2.5 secondi, come per il login email
+                    setTimeout(function() {
+                        window.location.href = 'index.html';
+                    }, 2500);
+                }
+            });
         }
 
         // Login con Google

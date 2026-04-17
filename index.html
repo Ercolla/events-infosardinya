@@ -19,6 +19,7 @@
     <script src="auth.js"></script>
     <script src="navbar.js"></script>
     <script src="supabaseClient.js"></script>
+    <script src="lightbox.js" defer></script>
 
     <style>
         * {
@@ -604,7 +605,7 @@
             container.innerHTML = topEvents.map(event => `
                 <div class="event-highlight-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer;">
                     <div class="event-image-wrapper">
-                        <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image">
+                        <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image lightbox-trigger" style="cursor: zoom-in;">
                         <span class="event-badge-top">${event.badge_text || 'In Evidenza'}</span>
                     </div>
                     <div class="event-content-highlight">

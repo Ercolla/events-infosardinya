@@ -360,6 +360,18 @@
                         <textarea class="form-textarea" placeholder="Scrivi il tuo messaggio qui..." required></textarea>
                     </div>
 
+                    <!-- Consenso GDPR -->
+                    <div class="form-group">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" id="gdpr-consent-contact" required
+                                   class="mt-1 w-4 h-4 rounded border-gray-300 flex-shrink-0" style="accent-color: #0077B6;">
+                            <span class="text-sm text-gray-600 leading-relaxed">
+                                Ho letto e accetto la <a href="privacy-policy.html" target="_blank" style="color: #0077B6; font-weight: 600; text-decoration: underline;">Privacy Policy</a>
+                                e acconsento al trattamento dei miei dati personali per la gestione della richiesta di contatto.
+                            </span>
+                        </label>
+                    </div>
+
                     <button type="submit" class="form-submit">Invia Messaggio</button>
                 </form>
             </div>
@@ -401,7 +413,7 @@
             <div class="footer-section">
                 <h3>Legale</h3>
                 <ul>
-                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
                     <li><a href="#">Termini di Servizio</a></li>
                     <li><a href="cookie-policy.html">Cookie Policy</a></li>
                     <li><a href="#">Contatti</a></li>

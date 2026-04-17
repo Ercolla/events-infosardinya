@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Events InfoSardinya</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="supabaseClient.js"></script>
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Palette Sardegna */
+        :root {
+            --color-primary: #151515;
+            --color-text: #686868;
+            --color-text-secondary: #4F4F4F;
+            --color-accent-red: #FF2122;
+            --color-sardegna-blue: #0077B6;
+            --color-sardegna-yellow: #F9B233;
+            --color-sardegna-sand: #F5E6D3;
+            --color-white: #FFFFFF;
+        }
+
+        /* Hero piccolo */
+        .page-hero {
+            background: linear-gradient(135deg, rgba(0, 119, 182, 0.85) 0%, rgba(0, 95, 163, 0.85) 100%),
+                        url('https://images.pexels.com/photos/3970375/pexels-photo-3970375.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=600&w=1920');
+            background-size: cover;
+            background-position: center;
+            padding: 5rem 1rem 3rem;
+            text-align: center;
+            color: white;
+        }
+
+        /* Contenuto policy */
+        .policy-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .policy-section h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--color-sardegna-blue);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-sardegna-sand);
+        }
+
+        .policy-section p,
+        .policy-section li {
+            color: var(--color-text);
+            line-height: 1.8;
+            font-size: 0.95rem;
+        }
+
+        .policy-section ul {
+            list-style: disc;
+            padding-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .policy-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .data-table th {
+            background: var(--color-sardegna-blue);
+            color: white;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            color: var(--color-text);
+        }
+
+        .data-table tr:nth-child(even) td {
+            background: #f9fafb;
+        }
+
+        .titolare-box {
+            background: var(--color-sardegna-sand);
+            border-left: 4px solid var(--color-sardegna-blue);
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+        }
+
+        .titolare-box p {
+            margin: 0.25rem 0;
+            color: var(--color-text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .titolare-box strong {
+            color: var(--color-primary);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 3rem 1rem;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--color-sardegna-yellow);
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div id="site-navbar"></div>
+
+    <!-- Hero -->
+    <section class="page-hero">
+        <h1 class="text-3xl md:text-4xl font-bold mb-3">Privacy Policy</h1>
+        <p class="text-lg opacity-90 max-w-2xl mx-auto">Informativa sul trattamento dei dati personali ai sensi del Regolamento UE 2016/679 (GDPR)</p>
+    </section>
+
+    <!-- Contenuto -->
+    <section class="max-w-4xl mx-auto px-4 py-12">
+
+        <p style="color: #686868; line-height: 1.8; margin-bottom: 2rem; font-size: 0.95rem;">
+            La presente informativa descrive le modalità di trattamento dei dati personali degli utenti che visitano
+            e utilizzano il sito <strong>Events InfoSardinya</strong>, in conformità al Regolamento Europeo 2016/679 (GDPR)
+            e alla normativa italiana vigente in materia di protezione dei dati personali.
+            <br>Ultimo aggiornamento: aprile 2026.
+        </p>
+
+        <!-- Sezione 1: Titolare -->
+        <div class="policy-section">
+            <h2>1. Titolare del Trattamento</h2>
+            <p>Il Titolare del trattamento dei dati personali raccolti tramite questo sito web è:</p>
+            <div class="titolare-box">
+                <p><strong>Pf2010 y Asociados SL</strong></p>
+                <p>CIF: B76507300</p>
+                <p>Calle Fairway Village, 94</p>
+                <p>38620 San Miguel de Abona</p>
+                <p>Santa Cruz de Tenerife, Spagna</p>
+                <p style="margin-top: 0.75rem;">
+                    Email: <a href="mailto:info@eventsinfosardinya.it" style="color: #0077B6; font-weight: 600;">info@eventsinfosardinya.it</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Sezione 2: Dati raccolti -->
+        <div class="policy-section">
+            <h2>2. Quali dati raccogliamo</h2>
+            <p>
+                Raccogliamo esclusivamente i dati necessari per fornire il nostro servizio.
+                Di seguito la tipologia dei dati trattati:
+            </p>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Tipo di dato</th>
+                        <th>Descrizione</th>
+                        <th>Base giuridica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Indirizzo email</strong></td>
+                        <td>Fornito in fase di registrazione o tramite il form di contatto</td>
+                        <td>Consenso dell'utente</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nome</strong></td>
+                        <td>Fornito in fase di registrazione</td>
+                        <td>Consenso dell'utente</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Password</strong></td>
+                        <td>Criptata e gestita in modo sicuro tramite Supabase Auth</td>
+                        <td>Esecuzione del contratto</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dati di navigazione</strong></td>
+                        <td>Cookie tecnici essenziali per il funzionamento del sito</td>
+                        <td>Legittimo interesse</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sezione 3: Finalità -->
+        <div class="policy-section">
+            <h2>3. Scopo del trattamento</h2>
+            <p>I dati personali raccolti vengono trattati per le seguenti finalità:</p>
+            <ul>
+                <li><strong>Creazione e gestione dell'account utente</strong> — per consentire la registrazione e l'accesso al sito.</li>
+                <li><strong>Autenticazione e login</strong> — per verificare l'identità dell'utente e garantire la sicurezza della sessione.</li>
+                <li><strong>Fornitura del servizio</strong> — per permettere la consultazione, la pubblicazione e la gestione degli eventi.</li>
+                <li><strong>Gestione degli eventi pubblicati</strong> — per associare gli eventi creati all'account dell'utente.</li>
+                <li><strong>Gestione delle richieste di contatto</strong> — per rispondere ai messaggi inviati tramite il form di contatto.</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                I dati <strong>non</strong> vengono utilizzati per finalità di marketing, profilazione o cessione a terzi.
+            </p>
+        </div>
+
+        <!-- Sezione 4: Dove sono salvati -->
+        <div class="policy-section">
+            <h2>4. Dove sono salvati i dati</h2>
+            <p>
+                I dati personali degli utenti sono gestiti in modo sicuro tramite il servizio cloud
+                <strong>Supabase</strong> (Supabase Inc.), che offre funzionalità di autenticazione e database
+                basate su PostgreSQL.
+            </p>
+            <ul>
+                <li>Le password sono criptate con algoritmi di hashing sicuri (bcrypt) e non sono mai memorizzate in chiaro.</li>
+                <li>Le comunicazioni tra il browser e i server avvengono tramite protocollo HTTPS.</li>
+                <li>I server di Supabase sono localizzati in data center conformi agli standard di sicurezza internazionali.</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                Per maggiori informazioni sulle misure di sicurezza di Supabase, consulta la loro
+                <a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer" style="color: #0077B6; font-weight: 600; text-decoration: underline;">Privacy Policy</a>.
+            </p>
+        </div>
+
+        <!-- Sezione 5: Periodo di conservazione -->
+        <div class="policy-section">
+            <h2>5. Periodo di conservazione dei dati</h2>
+            <p>I dati personali vengono conservati per il tempo strettamente necessario a perseguire le finalità per cui sono stati raccolti:</p>
+            <ul>
+                <li><strong>Dati dell'account</strong> — conservati fino alla cancellazione dell'account da parte dell'utente.</li>
+                <li><strong>Dati del form di contatto</strong> — conservati per il tempo necessario a gestire la richiesta e comunque non oltre 12 mesi.</li>
+                <li><strong>Cookie tecnici</strong> — durata della sessione del browser o come specificato nella <a href="cookie-policy.html" style="color: #0077B6; font-weight: 600; text-decoration: underline;">Cookie Policy</a>.</li>
+            </ul>
+        </div>
+
+        <!-- Sezione 6: Diritti dell'utente -->
+        <div class="policy-section">
+            <h2>6. Diritti dell'utente</h2>
+            <p>
+                In conformità con il GDPR (artt. 15-22), l'utente ha il diritto di:
+            </p>
+            <ul>
+                <li><strong>Diritto di accesso</strong> — ottenere conferma che sia o meno in corso un trattamento di dati personali che lo riguardano e, in tal caso, ottenere l'accesso ai dati.</li>
+                <li><strong>Diritto di rettifica</strong> — ottenere la correzione dei dati personali inesatti o l'integrazione di quelli incompleti.</li>
+                <li><strong>Diritto alla cancellazione (diritto all'oblio)</strong> — ottenere la cancellazione dei propri dati personali in qualsiasi momento.</li>
+                <li><strong>Diritto alla portabilità</strong> — ricevere i propri dati in un formato strutturato, di uso comune e leggibile da dispositivo automatico.</li>
+                <li><strong>Diritto di limitazione</strong> — ottenere la limitazione del trattamento quando ricorre una delle condizioni previste dall'art. 18 del GDPR.</li>
+                <li><strong>Diritto di opposizione</strong> — opporsi in qualsiasi momento al trattamento dei propri dati personali.</li>
+                <li><strong>Diritto di revocare il consenso</strong> — revocare il consenso prestato in qualsiasi momento, senza pregiudicare la liceità del trattamento basata sul consenso prima della revoca.</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                Per esercitare i propri diritti, l'utente può:
+            </p>
+            <ul>
+                <li>Accedere alla propria area personale per modificare o eliminare il proprio account.</li>
+                <li>Contattare il Titolare all'indirizzo email <a href="mailto:info@eventsinfosardinya.it" style="color: #0077B6; font-weight: 600;">info@eventsinfosardinya.it</a>.</li>
+                <li>Presentare un reclamo all'Autorità Garante per la protezione dei dati personali (in Italia: <a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer" style="color: #0077B6; font-weight: 600; text-decoration: underline;">www.garanteprivacy.it</a>).</li>
+            </ul>
+        </div>
+
+        <!-- Sezione 7: Condivisione con terzi -->
+        <div class="policy-section">
+            <h2>7. Condivisione dei dati con terze parti</h2>
+            <p>
+                I dati personali non vengono venduti, ceduti o comunicati a terzi per finalità commerciali.
+                I dati possono essere trattati da:
+            </p>
+            <ul>
+                <li><strong>Supabase Inc.</strong> — in qualità di responsabile del trattamento per i servizi di autenticazione e database cloud.</li>
+                <li><strong>Google</strong> — nel caso in cui l'utente scelga di registrarsi tramite Google OAuth. In tal caso, si applicano le <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" style="color: #0077B6; font-weight: 600; text-decoration: underline;">Privacy Policy di Google</a>.</li>
+            </ul>
+        </div>
+
+        <!-- Sezione 8: Modifiche -->
+        <div class="policy-section">
+            <h2>8. Modifiche alla presente informativa</h2>
+            <p>
+                Il Titolare si riserva il diritto di apportare modifiche alla presente informativa in qualsiasi momento,
+                dandone comunicazione agli utenti tramite questa pagina. Si consiglia di consultare periodicamente
+                questa pagina per prendere visione di eventuali aggiornamenti.
+            </p>
+        </div>
+
+        <!-- Sezione 9: Contatti -->
+        <div class="policy-section">
+            <h2>9. Contatti</h2>
+            <p>
+                Per qualsiasi domanda relativa alla presente Privacy Policy o al trattamento dei dati personali,
+                puoi contattarci tramite la pagina <a href="contatti.html" style="color: #0077B6; font-weight: 600; text-decoration: underline;">Contatti</a>
+                del nostro sito oppure scrivendo a
+                <a href="mailto:info@eventsinfosardinya.it" style="color: #0077B6; font-weight: 600;">info@eventsinfosardinya.it</a>.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=cultura">Cultura</a></li>
+                    <li><a href="categorie.html?filter=tradizioni">Tradizioni</a></li>
+                    <li><a href="categorie.html?filter=sagra">Sagre</a></li>
+                    <li><a href="categorie.html?filter=festival">Festival</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="cookie-policy.html">Cookie Policy</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+    <!-- Cookie Banner GDPR -->
+    <script src="cookie-banner.js"></script>
+
+</body>
+</html>

@@ -232,6 +232,18 @@
                             </div>
                         </div>
 
+                        <!-- Consenso GDPR -->
+                        <div class="mb-6">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" id="gdpr-consent" required
+                                       class="mt-1 w-4 h-4 rounded border-gray-300 text-red-500 focus:ring-red-500 flex-shrink-0">
+                                <span class="text-sm text-gray-600 leading-relaxed">
+                                    Ho letto e accetto la <a href="privacy-policy.html" target="_blank" class="text-red-500 hover:text-red-700 font-semibold underline">Privacy Policy</a>
+                                    e acconsento al trattamento dei miei dati personali per la creazione e gestione dell'account.
+                                </span>
+                            </label>
+                        </div>
+
                         <!-- Messaggi errore -->
                         <div id="error-msg" class="hidden mb-4 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded">
                         </div>
@@ -299,6 +311,8 @@
             var errorMsg = document.getElementById('error-msg');
             var submitBtn = document.getElementById('submit-btn');
 
+            var gdprConsent = document.getElementById('gdpr-consent');
+
             // Validazione
             if (!nome || !email || !password) {
                 errorMsg.textContent = 'Compila tutti i campi obbligatori.';
@@ -308,6 +322,12 @@
 
             if (password.length < 6) {
                 errorMsg.textContent = 'La password deve essere di almeno 6 caratteri.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            if (!gdprConsent.checked) {
+                errorMsg.textContent = 'Devi accettare la Privacy Policy per procedere con la registrazione.';
                 errorMsg.classList.remove('hidden');
                 return;
             }

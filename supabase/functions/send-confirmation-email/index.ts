@@ -2,7 +2,7 @@
 // Invia l'email di conferma Double Opt-In per la newsletter
 // Deploy: npx supabase functions deploy send-confirmation-email
 
-import "@supabase/functions-js/edge-runtime.d.ts";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // ============================================
 // CONFIGURAZIONE
@@ -16,7 +16,7 @@ const SITE_URL = "https://ercolla.github.io/events-infosardinya";
 
 console.log("Send Confirmation Email - Edge Function avviata");
 
-Deno.serve(async (req: Request) => {
+serve(async (req: Request) => {
   // Gestione CORS per chiamate dal frontend
   if (req.method === "OPTIONS") {
     return new Response("ok", {

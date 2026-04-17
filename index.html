@@ -677,7 +677,7 @@
                 const result = await subscribeNewsletter(email, true);
 
                 if (result.ok) {
-                    showMsg(msgEl, 'Quasi fatto! Controlla la tua casella email e clicca sul link di conferma per completare l\'iscrizione.', true);
+                    showMsg(msgEl, 'Quasi fatto! Controlla la tua casella di posta per confermare l\'iscrizione.', true);
                     emailInput.value = '';
                     privacyCheckbox.checked = false;
                 } else if (result.duplicate) {

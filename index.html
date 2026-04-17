@@ -670,20 +670,26 @@
                     return;
                 }
 
-                // Disabilita il bottone durante l'invio
+                // Disabilita il bottone e mostra stato di caricamento
                 btn.disabled = true;
-                btn.textContent = 'Invio...';
+                btn.textContent = 'Invio in corso...';
+                msgEl.style.display = 'none';
 
-                const result = await subscribeNewsletter(email, true);
+                try {
+                    const result = await subscribeNewsletter(email, true);
 
-                if (result.ok) {
-                    showMsg(msgEl, 'Quasi fatto! Controlla la tua casella di posta per confermare l\'iscrizione.', true);
-                    emailInput.value = '';
-                    privacyCheckbox.checked = false;
-                } else if (result.duplicate) {
-                    showMsg(msgEl, 'Questa email è già iscritta! Controlla la posta per il link di conferma.', false);
-                } else {
-                    showMsg(msgEl, 'Si è verificato un errore. Riprova più tardi.', false);
+                    if (result.ok) {
+                        showMsg(msgEl, 'Quasi fatto! Controlla la tua casella di posta per confermare l\'iscrizione.', true);
+                        emailInput.value = '';
+                        privacyCheckbox.checked = false;
+                    } else if (result.duplicate) {
+                        showMsg(msgEl, 'Questa email è già iscritta! Controlla la posta per il link di conferma.', false);
+                    } else {
+                        showMsg(msgEl, result.error || 'Si è verificato un errore. Riprova più tardi.', false);
+                    }
+                } catch (err) {
+                    console.error('Errore nel form newsletter:', err);
+                    showMsg(msgEl, 'Errore di connessione. Verifica la tua rete e riprova.', false);
                 }
 
                 btn.disabled = false;

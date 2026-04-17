@@ -516,23 +516,34 @@
         </div>
     </section>
 
-    <!-- ===== SEZIONE CTA ===== -->
+    <!-- ===== SEZIONE CTA — Newsletter ===== -->
     <section class="cta-section">
         <div class="cta-content">
             <h2 class="cta-title">Non Perderti Nessun Evento</h2>
             <p class="cta-text">
                 Iscriviti alla nostra newsletter e ricevi le notifiche degli eventi più interessanti direttamente nella tua casella di posta.
             </p>
-            <div style="display: flex; gap: 0.5rem; max-width: 500px; margin: 0 auto;">
-                <input
-                    type="email"
-                    placeholder="La tua email..."
-                    style="flex: 1; padding: 0.875rem 1rem; border: none; border-radius: 6px; font-size: 0.95rem;"
-                >
-                <button style="background: var(--color-sardegna-yellow); color: var(--color-primary); padding: 0.875rem 2rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                    Iscriviti
-                </button>
-            </div>
+            <form id="newsletter-form" style="max-width: 500px; margin: 0 auto;">
+                <div style="display: flex; gap: 0.5rem;">
+                    <input
+                        id="newsletter-email"
+                        type="email"
+                        placeholder="La tua email..."
+                        required
+                        style="flex: 1; padding: 0.875rem 1rem; border: none; border-radius: 6px; font-size: 0.95rem;"
+                    >
+                    <button type="submit" id="newsletter-btn" style="background: var(--color-sardegna-yellow); color: var(--color-primary); padding: 0.875rem 2rem; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                        Iscriviti
+                    </button>
+                </div>
+                <!-- Checkbox GDPR obbligatoria -->
+                <label style="display: flex; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; font-size: 0.85rem; color: rgba(255,255,255,0.9); cursor: pointer; text-align: left;">
+                    <input type="checkbox" id="newsletter-privacy" required style="margin-top: 3px; accent-color: var(--color-sardegna-yellow); min-width: 18px; min-height: 18px;">
+                    <span>Ho letto e accetto la <a href="privacy-policy.html" target="_blank" style="color: var(--color-sardegna-yellow); text-decoration: underline;">Privacy Policy</a></span>
+                </label>
+                <!-- Messaggio di feedback -->
+                <p id="newsletter-msg" style="display: none; margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 500;"></p>
+            </form>
         </div>
     </section>
 
@@ -633,6 +644,58 @@
             } catch (error) {
                 console.error('Errore nel caricamento degli eventi:', error);
                 document.getElementById('events-container').innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #FF2122;">Errore nel caricamento degli eventi. Riprova più tardi.</div>';
+            }
+        });
+    </script>
+
+    <!-- Script Newsletter -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('newsletter-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const emailInput = document.getElementById('newsletter-email');
+                const privacyCheckbox = document.getElementById('newsletter-privacy');
+                const msgEl = document.getElementById('newsletter-msg');
+                const btn = document.getElementById('newsletter-btn');
+                const email = emailInput.value.trim();
+
+                // Validazione checkbox privacy
+                if (!privacyCheckbox.checked) {
+                    showMsg(msgEl, 'Devi accettare la Privacy Policy per iscriverti.', false);
+                    return;
+                }
+
+                // Disabilita il bottone durante l'invio
+                btn.disabled = true;
+                btn.textContent = 'Invio...';
+
+                const result = await subscribeNewsletter(email, true);
+
+                if (result.ok) {
+                    showMsg(msgEl, 'Grazie per esserti iscritto! 🎉', true);
+                    emailInput.value = '';
+                    privacyCheckbox.checked = false;
+                } else if (result.duplicate) {
+                    showMsg(msgEl, 'Questa email è già iscritta!', false);
+                } else {
+                    showMsg(msgEl, 'Si è verificato un errore. Riprova più tardi.', false);
+                }
+
+                btn.disabled = false;
+                btn.textContent = 'Iscriviti';
+            });
+
+            function showMsg(el, text, isSuccess) {
+                el.textContent = text;
+                el.style.display = 'block';
+                el.style.background = isSuccess ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 33, 34, 0.2)';
+                el.style.color = isSuccess ? '#6ee7b7' : '#fca5a5';
+                // Nasconde il messaggio dopo 5 secondi
+                setTimeout(function() { el.style.display = 'none'; }, 5000);
             }
         });
     </script>

@@ -134,6 +134,33 @@ async function updateEvent(id, updatedData) {
     }
 }
 
+// ---------- NEWSLETTER ----------
+
+// Iscrizione alla newsletter
+async function subscribeNewsletter(email, agreedToPrivacy) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('newsletter_subscribers')
+            .insert([{ email: email, agreed_to_privacy: agreedToPrivacy }])
+            .select()
+            .single();
+
+        if (error) {
+            // Errore 23505 = violazione UNIQUE (email già presente)
+            if (error.code === '23505') {
+                return { ok: false, duplicate: true, error: 'Questa email è già iscritta!' };
+            }
+            console.error('Errore iscrizione newsletter:', error);
+            return { ok: false, error: error.message };
+        }
+
+        return { ok: true, data: data };
+    } catch (err) {
+        console.error('Errore nella connessione a Supabase:', err);
+        return { ok: false, error: err.message };
+    }
+}
+
 // Elimina un evento
 async function deleteEvent(id) {
     try {

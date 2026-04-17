@@ -677,11 +677,11 @@
                 const result = await subscribeNewsletter(email, true);
 
                 if (result.ok) {
-                    showMsg(msgEl, 'Grazie per esserti iscritto! 🎉', true);
+                    showMsg(msgEl, 'Quasi fatto! Controlla la tua casella email e clicca sul link di conferma per completare l\'iscrizione.', true);
                     emailInput.value = '';
                     privacyCheckbox.checked = false;
                 } else if (result.duplicate) {
-                    showMsg(msgEl, 'Questa email è già iscritta!', false);
+                    showMsg(msgEl, 'Questa email è già iscritta! Controlla la posta per il link di conferma.', false);
                 } else {
                     showMsg(msgEl, 'Si è verificato un errore. Riprova più tardi.', false);
                 }

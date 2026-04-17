@@ -136,22 +136,45 @@ async function updateEvent(id, updatedData) {
 
 // ---------- NEWSLETTER ----------
 
-// Iscrizione alla newsletter
+// URL della Edge Function per invio email di conferma
+const CONFIRMATION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/send-confirmation-email';
+
+// Iscrizione alla newsletter (Double Opt-In)
+// 1. Inserisce l'email con status 'pending' e genera un token
+// 2. Chiama la Edge Function per inviare l'email di conferma
 async function subscribeNewsletter(email, agreedToPrivacy) {
     try {
         const { data, error } = await supabaseClient
             .from('newsletter_subscribers')
             .insert([{ email: email, agreed_to_privacy: agreedToPrivacy }])
-            .select()
+            .select('confirmation_token')
             .single();
 
         if (error) {
-            // Errore 23505 = violazione UNIQUE (email già presente)
+            // Errore 23505 = violazione UNIQUE (email gia' presente)
             if (error.code === '23505') {
                 return { ok: false, duplicate: true, error: 'Questa email è già iscritta!' };
             }
             console.error('Errore iscrizione newsletter:', error);
             return { ok: false, error: error.message };
+        }
+
+        // Invio email di conferma tramite Edge Function
+        try {
+            await fetch(CONFIRMATION_FUNCTION_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                },
+                body: JSON.stringify({
+                    email: email,
+                    token: data.confirmation_token
+                })
+            });
+        } catch (emailErr) {
+            // L'iscrizione e' avvenuta, ma l'email potrebbe non essere partita
+            console.error('Errore invio email di conferma:', emailErr);
         }
 
         return { ok: true, data: data };

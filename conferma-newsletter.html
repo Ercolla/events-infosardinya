@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conferma Iscrizione Newsletter - Events InfoSardinya</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="auth.js"></script>
+    <script src="navbar.js"></script>
+    <script src="supabaseClient.js"></script>
+
+    <!-- Stili globali del sito -->
+    <link rel="stylesheet" href="src/app/globals.css">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .confirm-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .confirm-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        .confirm-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        .confirm-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .confirm-text {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        .confirm-btn {
+            display: inline-block;
+            background: var(--color-sardegna-yellow, #F5C518);
+            color: #0a0a0a;
+            padding: 0.875rem 2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .confirm-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        /* Stato di caricamento */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #F5C518;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Stato successo */
+        .success-color { color: #6ee7b7; }
+        /* Stato errore */
+        .error-color { color: #fca5a5; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar dinamica -->
+    <div id="site-navbar"></div>
+
+    <!-- Contenuto principale -->
+    <div class="confirm-container">
+        <div class="confirm-card" id="confirm-card">
+            <!-- Stato iniziale: caricamento -->
+            <div class="spinner"></div>
+            <p class="confirm-title">Verifica in corso...</p>
+            <p class="confirm-text">Stiamo confermando la tua iscrizione alla newsletter.</p>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="footer-content">
+            <!-- About -->
+            <div class="footer-section">
+                <h3>Events InfoSardinya</h3>
+                <p style="color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; line-height: 1.6;">
+                    La piattaforma numero uno per scoprire gli eventi più emozionanti in Sardegna. Siamo qui per aiutarti a trovare il tuo prossimo momento indimenticabile.
+                </p>
+            </div>
+
+            <!-- Menu -->
+            <div class="footer-section">
+                <h3>Menu</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="eventi.html">Tutti gli Eventi</a></li>
+                    <li><a href="categorie.html">Categorie</a></li>
+                    <li><a href="pacchetti.html">Pacchetti</a></li>
+                    <li><a href="chi-siamo.html">Chi Siamo</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+
+            <!-- Categorie -->
+            <div class="footer-section">
+                <h3>Categorie Popolari</h3>
+                <ul>
+                    <li><a href="categorie.html?filter=cultura">Cultura</a></li>
+                    <li><a href="categorie.html?filter=tradizioni">Tradizioni</a></li>
+                    <li><a href="categorie.html?filter=sagra">Sagre</a></li>
+                    <li><a href="categorie.html?filter=festival">Festival</a></li>
+                </ul>
+            </div>
+
+            <!-- Legale -->
+            <div class="footer-section">
+                <h3>Legale</h3>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="cookie-policy.html">Cookie Policy</a></li>
+                    <li><a href="contatti.html">Contatti</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-divider">
+            <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
+        </div>
+    </footer>
+
+    <!-- Script di conferma -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            const card = document.getElementById('confirm-card');
+
+            // Legge il parametro ?token= dall'URL
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+
+            // Se non c'e' token nell'URL, mostra errore
+            if (!token) {
+                showError('Link non valido', 'Il link di conferma non contiene un token valido. Assicurati di aver copiato l\'intero link dall\'email ricevuta.');
+                return;
+            }
+
+            try {
+                // Cerca il token nella tabella newsletter_subscribers
+                const { data, error } = await supabaseClient
+                    .from('newsletter_subscribers')
+                    .select('id, status, email')
+                    .eq('confirmation_token', token)
+                    .single();
+
+                if (error || !data) {
+                    showError('Token non trovato', 'Questo link di conferma non e\' valido o e\' gia\' scaduto. Prova a iscriverti nuovamente dalla homepage.');
+                    return;
+                }
+
+                // Se gia' confermato, mostra messaggio appropriato
+                if (data.status === 'confirmed') {
+                    showSuccess('Iscrizione gia\' confermata!', 'Il tuo indirizzo email e\' gia\' nella nostra lista attiva. Riceverai la prossima newsletter!');
+                    return;
+                }
+
+                // Aggiorna lo status da 'pending' a 'confirmed'
+                const { error: updateError } = await supabaseClient
+                    .from('newsletter_subscribers')
+                    .update({ status: 'confirmed' })
+                    .eq('confirmation_token', token);
+
+                if (updateError) {
+                    console.error('Errore aggiornamento status:', updateError);
+                    showError('Errore di conferma', 'Si e\' verificato un errore durante la conferma. Riprova piu\' tardi o contattaci.');
+                    return;
+                }
+
+                // Successo!
+                showSuccess('Iscrizione confermata con successo!', 'Benvenuto nella community di Events InfoSardinya! Riceverai i migliori eventi della Sardegna direttamente nella tua casella di posta.');
+
+            } catch (err) {
+                console.error('Errore nella conferma:', err);
+                showError('Errore imprevisto', 'Si e\' verificato un errore. Riprova piu\' tardi.');
+            }
+        });
+
+        // Mostra messaggio di successo
+        function showSuccess(title, text) {
+            const card = document.getElementById('confirm-card');
+            card.innerHTML = `
+                <div class="confirm-icon">&#10003;</div>
+                <p class="confirm-title success-color">${title}</p>
+                <p class="confirm-text">${text}</p>
+                <a href="index.html" class="confirm-btn">Torna alla Homepage</a>
+            `;
+        }
+
+        // Mostra messaggio di errore
+        function showError(title, text) {
+            const card = document.getElementById('confirm-card');
+            card.innerHTML = `
+                <div class="confirm-icon">&#10007;</div>
+                <p class="confirm-title error-color">${title}</p>
+                <p class="confirm-text">${text}</p>
+                <a href="index.html" class="confirm-btn">Torna alla Homepage</a>
+            `;
+        }
+    </script>
+
+    <!-- Cookie Banner GDPR -->
+    <script src="cookie-banner.js"></script>
+
+</body>
+</html>

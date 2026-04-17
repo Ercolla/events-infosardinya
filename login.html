@@ -167,8 +167,8 @@
     <script>
         // Se torniamo da Google OAuth, NON fare redirect automatico
         // — mostriamo prima la schermata di benvenuto
-        var _loginParams = new URLSearchParams(window.location.search);
-        if (_loginParams.get('provider') !== 'google') {
+        var _isGoogleReturn = sessionStorage.getItem('google_oauth_pending') === '1';
+        if (!_isGoogleReturn) {
             authRedirectIfLoggedIn('index.html');
         }
     </script>
@@ -282,13 +282,15 @@
         }
 
         // Gestione ritorno da Google OAuth — mostra schermata di benvenuto
-        if (params.get('provider') === 'google') {
-            // Pulisci URL dal parametro
-            window.history.replaceState({}, document.title, window.location.pathname);
-
-            // Attendi che Supabase processi il token dalla URL
+        // Il flag è stato impostato in handleGoogleLogin() prima del redirect a Google
+        if (sessionStorage.getItem('google_oauth_pending') === '1') {
+            // NON pulire l'URL qui — Supabase deve prima leggere il token dal fragment hash
+            // Attendi che Supabase processi il token e confermi la sessione
             supabaseClient.auth.onAuthStateChange(function(event, session) {
-                if (session && session.user) {
+                if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session && session.user) {
+                    // Sessione confermata — rimuovi il flag
+                    sessionStorage.removeItem('google_oauth_pending');
+
                     var user = session.user;
                     var userName = (user.user_metadata && user.user_metadata.full_name)
                         || (user.user_metadata && user.user_metadata.nome)
@@ -302,6 +304,9 @@
                     document.getElementById('welcome-user-name').textContent = userName;
                     welcomeEl.classList.remove('hidden');
 
+                    // Pulisci l'URL solo DOPO che Supabase ha processato il token
+                    window.history.replaceState({}, document.title, window.location.pathname);
+
                     // Redirect dopo 2.5 secondi, come per il login email
                     setTimeout(function() {
                         window.location.href = 'index.html';
@@ -312,8 +317,11 @@
 
         // Login con Google
         async function handleGoogleLogin() {
+            // Flag per riconoscere il ritorno da Google OAuth al reload della pagina
+            sessionStorage.setItem('google_oauth_pending', '1');
             var result = await authLoginWithGoogle();
             if (!result.ok) {
+                sessionStorage.removeItem('google_oauth_pending');
                 var errorMsg = document.getElementById('error-msg');
                 errorMsg.textContent = result.error;
                 errorMsg.classList.remove('hidden');

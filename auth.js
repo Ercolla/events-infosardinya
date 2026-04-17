@@ -98,6 +98,37 @@ async function authLogout() {
     window.location.href = 'index.html';
 }
 
+// ---------- RECUPERO PASSWORD ----------
+
+async function authResetPassword(email) {
+    var result = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname.replace(/[^/]*$/, '') + 'imposta-nuova-password.html'
+    });
+
+    if (result.error) {
+        var msg = result.error.message;
+        if (msg.includes('rate limit')) msg = 'Troppi tentativi. Riprova fra qualche minuto.';
+        return { ok: false, error: msg };
+    }
+
+    return { ok: true };
+}
+
+async function authUpdatePassword(newPassword) {
+    var result = await supabaseClient.auth.updateUser({
+        password: newPassword
+    });
+
+    if (result.error) {
+        var msg = result.error.message;
+        if (msg.includes('at least')) msg = 'La password deve essere di almeno 6 caratteri.';
+        if (msg.includes('same password')) msg = 'La nuova password deve essere diversa dalla precedente.';
+        return { ok: false, error: msg };
+    }
+
+    return { ok: true };
+}
+
 // ---------- GESTIONE RUOLO ADMIN ----------
 
 // Lista delle email autorizzate come admin

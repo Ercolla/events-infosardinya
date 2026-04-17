@@ -1,5 +1,7 @@
 // Edge Function: send-confirmation-email
 // Invia l'email di conferma Double Opt-In per la newsletter
+// Mittente: events@infosardinya.it (registrazione/conferma)
+// Nota: per la newsletter settimanale si userà newsletter@infosardinya.it
 // Deploy: npx supabase functions deploy send-confirmation-email
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -78,6 +80,9 @@ serve(async (req: Request) => {
           <!-- Corpo -->
           <tr>
             <td style="padding: 40px;">
+              <h2 style="margin: 0 0 20px; color: #0a0a0a; font-size: 20px; font-weight: 700; text-align: center;">
+                Non perderti nessun evento
+              </h2>
               <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
                 Ciao!
               </p>
@@ -142,7 +147,7 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         from: `${FROM_NAME} <${FROM_EMAIL}>`,
         to: [email],
-        subject: "Conferma la tua iscrizione alla newsletter di InfoSardinya Eventi",
+        subject: "Non perderti nessun evento — Conferma la tua iscrizione",
         html: emailHtml,
       }),
     });

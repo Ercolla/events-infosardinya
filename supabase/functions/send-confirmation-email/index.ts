@@ -8,7 +8,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // CONFIGURAZIONE
 // ============================================
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY")!;
-const FROM_EMAIL = "newsletter@eventiinsardegna.it";
+// Mittente di test Resend (cambiare con dominio verificato in produzione)
+const FROM_EMAIL = "onboarding@resend.dev";
 const FROM_NAME = "Events InfoSardinya";
 
 // URL base del sito (GitHub Pages)

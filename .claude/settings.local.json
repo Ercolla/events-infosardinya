@@ -31,7 +31,13 @@
       "Bash(node scrape-images.js)",
       "Bash(wc -l \"C:\\\\eventsIinfosardinyaIt_CLAUDCODEMAX\"/*.html)",
       "Bash(npx supabase *)",
-      "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.js)"
+      "Bash(ls -la /c/eventsIinfosardinyaIt_CLAUDCODEMAX/*.js)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX status)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX diff --stat)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add index.html)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX commit -m ' *)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX push origin main)",
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add *.html)"
     ]
   }
 }

@@ -136,8 +136,13 @@ async function updateEvent(id, updatedData) {
 
 // ---------- CONTATTI ----------
 
+// URL della Edge Function per inoltro email contatti a events@infosardinya.it
+const CONTACT_FUNCTION_URL = SUPABASE_URL + '/functions/v1/send-contact-email';
+
 // Invia un messaggio di contatto
-async function sendContactMessage(email, subject, message) {
+// 1. Salva il messaggio su Supabase (tabella contact_messages)
+// 2. Inoltra via Edge Function una email a events@infosardinya.it
+async function sendContactMessage(name, email, subject, message) {
     try {
         const { data, error } = await supabaseClient
             .from('contact_messages')
@@ -148,6 +153,26 @@ async function sendContactMessage(email, subject, message) {
         if (error) {
             console.error('Errore invio messaggio contatto:', error);
             return { ok: false, error: error.message };
+        }
+
+        // Inoltro via email a events@infosardinya.it (Edge Function + Resend)
+        try {
+            await fetch(CONTACT_FUNCTION_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message
+                })
+            });
+        } catch (emailErr) {
+            // Il messaggio è salvato su DB anche se l'email non parte
+            console.error('Errore invio email contatto:', emailErr);
         }
 
         return { ok: true, data: data };

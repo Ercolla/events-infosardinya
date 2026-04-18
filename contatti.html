@@ -448,6 +448,7 @@
                 const consentCheckbox = document.getElementById('gdpr-consent-contact');
                 const submitBtn = document.getElementById('contact-submit');
 
+                const name = nameInput.value.trim();
                 const email = emailInput.value.trim();
                 const subject = subjectInput.value.trim();
                 const message = messageInput.value.trim();
@@ -463,7 +464,7 @@
                 const originalText = submitBtn.textContent;
                 submitBtn.textContent = 'Invio...';
 
-                const result = await sendContactMessage(email, subject, message);
+                const result = await sendContactMessage(name, email, subject, message);
 
                 if (result.ok) {
                     showMsg('Grazie! Il tuo messaggio è stato inviato con successo. Ti risponderemo presto! 🎉', true);

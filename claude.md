@@ -1,7 +1,7 @@
 # Istruzioni per Istruzioni per Claude Code per sviluppare Events Infosardinya
 Questo file viene letto automaticamente da Claude Code a ogni sessione.
 Contiene le regole, il contesto e i vincoli del progetto.
-Leggilo per intero prima di fare qualsiasi modifica.
+Leggilo per intero prima di fare qualsiasi modifica e parlami sempre in italiano.
 
 🎯 Panoramica del progetto
 Sito blog/content realizzato con Next.js e Supabase (solo database, no auth, no storage, no edge functions).

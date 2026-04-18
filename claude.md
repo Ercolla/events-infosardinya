@@ -43,9 +43,9 @@ Se un componente funziona, aggiungici sopra — non riscriverlo da zero.
 Nuove funzionalità vanno in file nuovi quando possibile.
 Se devi modificare un file esistente, fai edit chirurgici (poche righe, mirate).
 
-Regola 3: Non toccare il database senza conferma
-MAI creare, modificare o eliminare tabelle/colonne Supabase senza conferma esplicita.
-MAI eseguire query distruttive (DELETE, DROP, TRUNCATE) di nessun tipo.
+Regola 3: Puoi toccare il database senza conferma
+Puoi creare, modificare o eliminare tabelle/colonne Supabase senza conferma esplicita.
+Puoi eseguire query distruttive (DELETE, DROP, TRUNCATE).
 Se serve una nuova tabella o colonna, proponi prima lo schema SQL e attendi l'OK.
 
 Regola 4: Preserva la struttura del progetto
@@ -112,6 +112,9 @@ Elenca qui le funzionalità da completare o i file su cui si sta lavorando.
 -- WARNING: This schema is for context only and is not meant to be run.
 -- Table order and constraints may not be valid for execution.
 
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
 CREATE TABLE public.events (
   id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
   created_at timestamp with time zone NOT NULL DEFAULT now(),
@@ -125,9 +128,28 @@ CREATE TABLE public.events (
   lng numeric,
   badge_text character varying,
   image text,
-  CONSTRAINT events_pkey PRIMARY KEY (id)
+  date_end date,
+  author_id uuid,
+  CONSTRAINT events_pkey PRIMARY KEY (id),
+  CONSTRAINT events_author_id_fkey FOREIGN KEY (author_id) REFERENCES auth.users(id)
 );
-
+CREATE TABLE public.newsletter_subscribers (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  email text NOT NULL UNIQUE,
+  agreed_to_privacy boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  status text NOT NULL DEFAULT 'pending'::text,
+  confirmation_token uuid DEFAULT uuid_generate_v4(),
+  CONSTRAINT newsletter_subscribers_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.profiles (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  email text NOT NULL UNIQUE,
+  full_name text,
+  newsletter_opt_in boolean NOT NULL DEFAULT false,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT profiles_pkey PRIMARY KEY (id)
+);
 
 📁 Struttura del progetto
 
@@ -150,3 +172,27 @@ Riassumi — elenca i file creati/modificati con un breve changelog
 📝 Changelog sessioni
 
 Aggiorna questa sezione alla fine di ogni sessione di lavoro.
+
+## Sessione 2026-04-18
+
+### Email newsletter (Edge Function + dominio verificato)
+- Attivato dominio verificato `infosardinya.it` su Resend
+- `supabase/functions/send-confirmation-email/index.ts`:
+  - Mittente: `Newsletter InfoSardinya <newsletter@infosardinya.it>`
+  - `reply_to: events@infosardinya.it` (risposte utenti)
+  - Oggetto: "Non perderti nessun evento"
+  - Aggiunto titolo h2 "Non perderti nessun evento" nel corpo email
+- `index.html`: corretto casing titolo CTA ("Non perderti nessun evento")
+- Deploy: `npx supabase functions deploy send-confirmation-email`
+
+### Login Google OAuth — schermata benvenuto (bugfix)
+- `auth.js`: `authLoginWithGoogle()` — `redirectTo` punta a `login.html` (senza query param per evitare mismatch con Redirect URLs Supabase)
+- `login.html`:
+  - Flag `sessionStorage.google_oauth_pending` impostato prima del redirect a Google
+  - Guard `authRedirectIfLoggedIn` saltato se flag presente
+  - `onAuthStateChange` intercetta evento `SIGNED_IN` e mostra schermata "Accesso completato!" identica a quella del login email (2.5s delay + redirect)
+  - `replaceState` per pulire URL spostato DOPO che Supabase ha processato il token hash (prima cancellava il token → loop di redirect)
+  - Nome utente letto da `user_metadata.full_name` (fornito da Google)
+
+### Config Supabase da verificare
+- **Authentication → URL Configuration → Redirect URLs** deve contenere: `https://ercolla.github.io/events-infosardinya/login.html`

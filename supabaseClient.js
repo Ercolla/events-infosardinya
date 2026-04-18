@@ -139,6 +139,34 @@ async function updateEvent(id, updatedData) {
 // URL della Edge Function per invio email di conferma
 const CONFIRMATION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/send-confirmation-email';
 
+// ---------- CONTATTI ----------
+
+// Invia un messaggio di contatto
+async function sendContactMessage(email, subject, message) {
+    try {
+        const { data, error } = await supabaseClient
+            .from('contact_messages')
+            .insert([{ email: email, subject: subject, message: message }])
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Errore invio messaggio contatto:', error);
+            return { ok: false, error: error.message };
+        }
+
+        return { ok: true, data: data };
+    } catch (err) {
+        console.error('Errore nella connessione a Supabase:', err);
+        return { ok: false, error: err.message };
+    }
+}
+
+// ---------- NEWSLETTER ----------
+
+// URL della Edge Function per invio email di conferma
+const CONFIRMATION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/send-confirmation-email';
+
 // Iscrizione alla newsletter (Double Opt-In)
 // 1. Inserisce l'email con status 'pending' e genera un token
 // 2. Chiama la Edge Function per inviare l'email di conferma

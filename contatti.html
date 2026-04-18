@@ -348,22 +348,22 @@
                 <form id="contact-form">
                     <div class="form-group">
                         <label class="form-label">Nome Completo *</label>
-                        <input type="text" class="form-input" placeholder="Il tuo nome" required>
+                        <input type="text" id="contact-name" class="form-input" placeholder="Il tuo nome" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Email *</label>
-                        <input type="email" class="form-input" placeholder="La tua email" required>
+                        <input type="email" id="contact-email" class="form-input" placeholder="La tua email" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Oggetto *</label>
-                        <input type="text" class="form-input" placeholder="Oggetto del messaggio" required>
+                        <input type="text" id="contact-subject" class="form-input" placeholder="Oggetto del messaggio" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Messaggio *</label>
-                        <textarea class="form-textarea" placeholder="Scrivi il tuo messaggio qui..." required></textarea>
+                        <textarea id="contact-message" class="form-textarea" placeholder="Scrivi il tuo messaggio qui..." required></textarea>
                     </div>
 
                     <!-- Consenso GDPR -->
@@ -378,7 +378,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="form-submit">Invia Messaggio</button>
+                    <button type="submit" id="contact-submit" class="form-submit">Invia Messaggio</button>
                 </form>
             </div>
         </div>
@@ -431,6 +431,75 @@
             <p>&copy; 2024 Events InfoSardinya. Tutti i diritti riservati. Creato con ❤️ per la Sardegna.</p>
         </div>
     </footer>
+
+    <!-- Script per gestione form contatti -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contact-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const nameInput = document.getElementById('contact-name');
+                const emailInput = document.getElementById('contact-email');
+                const subjectInput = document.getElementById('contact-subject');
+                const messageInput = document.getElementById('contact-message');
+                const consentCheckbox = document.getElementById('gdpr-consent-contact');
+                const submitBtn = document.getElementById('contact-submit');
+
+                const email = emailInput.value.trim();
+                const subject = subjectInput.value.trim();
+                const message = messageInput.value.trim();
+
+                // Validazione checkbox GDPR
+                if (!consentCheckbox.checked) {
+                    showMsg('Devi accettare la Privacy Policy per inviare il messaggio.', false);
+                    return;
+                }
+
+                // Disabilita il bottone durante l'invio
+                submitBtn.disabled = true;
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Invio...';
+
+                const result = await sendContactMessage(email, subject, message);
+
+                if (result.ok) {
+                    showMsg('Grazie! Il tuo messaggio è stato inviato con successo. Ti risponderemo presto! 🎉', true);
+                    form.reset();
+                } else {
+                    showMsg('Si è verificato un errore. Riprova più tardi.', false);
+                }
+
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            });
+
+            function showMsg(text, isSuccess) {
+                // Crea o seleziona il div per i messaggi
+                let msgDiv = document.getElementById('contact-msg');
+                if (!msgDiv) {
+                    msgDiv = document.createElement('div');
+                    msgDiv.id = 'contact-msg';
+                    form.insertBefore(msgDiv, form.lastElementChild);
+                }
+
+                msgDiv.textContent = text;
+                msgDiv.style.padding = '1rem';
+                msgDiv.style.marginBottom = '1.5rem';
+                msgDiv.style.borderRadius = '6px';
+                msgDiv.style.fontSize = '0.9rem';
+                msgDiv.style.fontWeight = '500';
+                msgDiv.style.display = 'block';
+                msgDiv.style.background = isSuccess ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 33, 34, 0.2)';
+                msgDiv.style.color = isSuccess ? '#047857' : '#991b1b';
+
+                // Nasconde il messaggio dopo 5 secondi
+                setTimeout(function() { msgDiv.style.display = 'none'; }, 5000);
+            }
+        });
+    </script>
 
     <!-- Cookie Banner GDPR -->
     <script src="cookie-banner.js"></script>

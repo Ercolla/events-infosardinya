@@ -134,11 +134,6 @@ async function updateEvent(id, updatedData) {
     }
 }
 
-// ---------- NEWSLETTER ----------
-
-// URL della Edge Function per invio email di conferma
-const CONFIRMATION_FUNCTION_URL = SUPABASE_URL + '/functions/v1/send-confirmation-email';
-
 // ---------- CONTATTI ----------
 
 // Invia un messaggio di contatto

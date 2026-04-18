@@ -470,7 +470,10 @@
                     showMsg('Grazie! Il tuo messaggio è stato inviato con successo. Ti risponderemo presto! 🎉', true);
                     form.reset();
                 } else {
-                    showMsg('Si è verificato un errore. Riprova più tardi.', false);
+                    // Mostra l'errore specifico per facilitare la diagnosi
+                    var detail = result.error ? (' (' + result.error + ')') : '';
+                    showMsg('Si è verificato un errore. Riprova più tardi.' + detail, false);
+                    console.error('Errore form contatti:', result);
                 }
 
                 submitBtn.disabled = false;

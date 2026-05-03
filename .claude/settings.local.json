@@ -37,7 +37,9 @@
       "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add index.html)",
       "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX commit -m ' *)",
       "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX push origin main)",
-      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add *.html)"
+      "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add *.html)",
+      "Bash(npx http-server *)",
+      "Bash(npx -y http-server . -p 3000)"
     ]
   }
 }

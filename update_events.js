@@ -74,6 +74,68 @@ async function fetchPage(url) {
     }
 }
 
+// Recupera descrizione e immagine dalla pagina di dettaglio dell'evento
+async function fetchEventDetails(detailUrl) {
+    if (!detailUrl || !detailUrl.startsWith('http')) return { description: '', image: '' };
+
+    const html = await fetchPage(detailUrl);
+    if (!html) return { description: '', image: '' };
+
+    const $ = cheerio.load(html);
+
+    // Estrai descrizione: cerca nel contenuto principale dell'articolo
+    let description = '';
+    const contentSelectors = [
+        '.entry-content', '.post-content', '.event-description',
+        '.tribe-events-single-event-description', 'article .content',
+        '.event-content', '.single-content', 'main p'
+    ];
+    for (const selector of contentSelectors) {
+        const el = $(selector);
+        if (el.length) {
+            description = el.find('p').map((_, p) => $(p).text().trim()).get().join(' ').trim();
+            if (description.length > 50) break;
+        }
+    }
+    // Fallback: prendi i primi paragrafi significativi
+    if (description.length < 50) {
+        description = $('p').filter((_, p) => $(p).text().trim().length > 30)
+            .slice(0, 3)
+            .map((_, p) => $(p).text().trim())
+            .get().join(' ');
+    }
+    // Limita a 500 caratteri per evitare testi troppo lunghi
+    if (description.length > 500) {
+        description = description.substring(0, 497) + '...';
+    }
+
+    // Estrai immagine principale (locandina evento, non icone o loghi)
+    let image = '';
+    const imgSelectors = [
+        'article img[src*="upload"]', '.entry-content img', '.post-content img',
+        '.event-image img', 'meta[property="og:image"]', '.featured-image img',
+        'img.wp-post-image', 'img[src*="evento"]', 'img[src*="event"]'
+    ];
+    for (const selector of imgSelectors) {
+        const el = $(selector).first();
+        if (el.length) {
+            const src = el.attr('content') || el.attr('src') || el.attr('data-src') || '';
+            // Filtra immagini troppo piccole (icone, placeholder)
+            if (src.startsWith('http') && !src.includes('150x150') && !src.includes('logo') && !src.includes('icon')) {
+                image = src;
+                break;
+            }
+        }
+    }
+    // Fallback: og:image meta tag
+    if (!image) {
+        const ogImage = $('meta[property="og:image"]').attr('content') || '';
+        if (ogImage.startsWith('http')) image = ogImage;
+    }
+
+    return { description, image };
+}
+
 // Estrae la citta' dal testo (dopo "a ", "di ", ultimo segmento dopo virgola)
 function extractCity(text) {
     if (!text) return 'Sardegna';
@@ -489,6 +551,24 @@ async function main() {
 
     // Assegna badge automatici
     allScraped = allScraped.map(assignBadge);
+
+    // Arricchisci gli eventi: recupera descrizione e immagine dalle pagine di dettaglio
+    console.log('\n--- Arricchimento eventi (descrizioni + immagini) ---');
+    for (let i = 0; i < allScraped.length; i++) {
+        const event = allScraped[i];
+        // Arricchisci solo se manca descrizione o immagine e ha un URL di dettaglio
+        if ((!event.description || !event.image) && event.source_url && event.source_url.startsWith('http')) {
+            const details = await fetchEventDetails(event.source_url);
+            if (!event.description && details.description) {
+                event.description = details.description;
+            }
+            if (!event.image && details.image) {
+                event.image = details.image;
+            }
+            // Pausa breve per non sovraccaricare i server fonte
+            await new Promise(r => setTimeout(r, 500));
+        }
+    }
 
     // Inserisci su Supabase (con deduplicazione)
     const stats = await insertNewEvents(allScraped);

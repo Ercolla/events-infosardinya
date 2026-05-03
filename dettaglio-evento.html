@@ -462,9 +462,9 @@
                     <h2 class="event-section-title">Informazioni Pratiche</h2>
                     <div class="event-highlights">
                         <div class="highlight-card">
-                            <div class="highlight-icon">🎫</div>
-                            <div class="highlight-title">Biglietti</div>
-                            <div class="highlight-text">Disponibili online. Prenotazione consigliata.</div>
+                            <div class="highlight-icon">ℹ️</div>
+                            <div class="highlight-title">Info Evento</div>
+                            <div class="highlight-text">Consulta la fonte ufficiale per tutti i dettagli</div>
                         </div>
                         <div class="highlight-card">
                             <div class="highlight-icon">🚗</div>
@@ -515,8 +515,6 @@
                         </div>
                     </div>
 
-                    <button class="cta-button">Acquista Biglietti</button>
-
                     <div class="social-share">
                         <button class="social-btn" title="Condividi su Facebook">f</button>
                         <button class="social-btn" title="Condividi su Instagram">📷</button>
@@ -524,20 +522,26 @@
                     </div>
                 </div>
 
-                <div class="info-box">
-                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Informazioni di Contatto</h3>
+                <!-- Fonte evento -->
+                <div class="info-box" id="source-box" style="display:none;">
+                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Fonte Evento</h3>
                     <div class="info-item">
-                        <div class="info-icon">📞</div>
+                        <div class="info-icon">🔗</div>
                         <div class="info-content">
-                            <div class="info-label">Telefono</div>
-                            <div class="info-value"><a href="tel:+390704567890" style="color: inherit; text-decoration: none;">+39 070 456 7890</a></div>
+                            <div class="info-label">Pubblicato da</div>
+                            <div class="info-value"><a id="source-link" href="#" target="_blank" rel="noopener" style="color: var(--color-sardegna-blue); text-decoration: underline;">-</a></div>
                         </div>
                     </div>
+                </div>
+
+                <!-- Box pubblicitario -->
+                <div class="info-box">
+                    <h3 style="font-weight: 700; margin-bottom: 1rem;">Spazio Pubblicitario</h3>
                     <div class="info-item">
                         <div class="info-icon">📧</div>
                         <div class="info-content">
-                            <div class="info-label">Email</div>
-                            <div class="info-value"><a href="mailto:info@eventsinfosardinya.it" style="color: inherit; text-decoration: none;">info@eventsinfosardinya.it</a></div>
+                            <div class="info-label">Per inserire un box pubblicitario rivolgersi a questa email</div>
+                            <div class="info-value"><a href="mailto:events@infosardinya.it" style="color: var(--color-sardegna-blue); text-decoration: none;">events@infosardinya.it</a></div>
                         </div>
                     </div>
                 </div>
@@ -641,6 +645,15 @@
                     document.getElementById('sidebar-time').textContent = event.time || 'Orario non specificato';
                     document.getElementById('sidebar-location').textContent = event.location;
                     document.getElementById('sidebar-capacity').textContent = event.capacity || 'Posti disponibili';
+
+                    // Mostra fonte evento se disponibile
+                    if (event.source_name) {
+                        var sourceBox = document.getElementById('source-box');
+                        var sourceLink = document.getElementById('source-link');
+                        sourceBox.style.display = '';
+                        sourceLink.textContent = event.source_name;
+                        sourceLink.href = event.source_url || '#';
+                    }
 
                     // Aggiorna colore hero in base alla categoria
                     const heroSection = document.getElementById('event-hero');

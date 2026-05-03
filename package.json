@@ -4,7 +4,8 @@
   "description": "",
   "main": "auth.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update-events": "node update_events.js"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,31 @@
+name: Aggiornamento Quotidiano Eventi
+
+on:
+  schedule:
+    # Ogni mattina alle 06:00 UTC (08:00 ora italiana)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Permette l'esecuzione manuale dal tab Actions di GitHub
+
+jobs:
+  scrape-events:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installa dipendenze
+        run: npm ci
+
+      - name: Esegui scraper multi-fonte
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+        run: node update_events.js

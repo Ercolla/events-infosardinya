@@ -642,7 +642,10 @@
                         <span class="event-badge-top">${event.badge_text || 'In Evidenza'}</span>
                     </div>
                     <div class="event-content-highlight">
-                        <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
+                            ${event.source_name ? '<a href="' + (event.source_url || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style="background:rgba(0,119,182,0.1); color:var(--color-sardegna-blue); text-decoration:none; white-space:nowrap;" title="Fonte: ' + event.source_name + '">🔗 ' + event.source_name + '</a>' : ''}
+                        </div>
                         <h3 class="event-title-highlight">${event.title}</h3>
                         <div class="event-meta">
                             <div class="event-meta-item">

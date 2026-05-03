@@ -353,7 +353,10 @@
                 <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer;">
                     <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image lightbox-trigger" style="cursor: zoom-in;">
                     <div class="event-body">
-                        <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                            <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
+                            ${event.source_name ? '<a href="' + (event.source_url || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style="background:rgba(0,119,182,0.1); color:var(--color-sardegna-blue); text-decoration:none; white-space:nowrap;" title="Fonte: ' + event.source_name + '">🔗 ' + event.source_name + '</a>' : ''}
+                        </div>
                         <h3 class="event-title">${event.title}</h3>
                         <div class="event-info">
                             <div class="event-info-item">📅 ${event.date_end && event.date_end !== event.date ? 'Dal ' + new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT') + ' al ' + new Date(event.date_end + 'T00:00:00').toLocaleDateString('it-IT') : new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT')}</div>

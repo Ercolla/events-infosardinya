@@ -642,11 +642,11 @@
                         <span class="event-badge-top">${event.badge_text || 'In Evidenza'}</span>
                     </div>
                     <div class="event-content-highlight">
-                        <div class="event-category">${event.badge_text || ''}</div>
+                        <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
                         <h3 class="event-title-highlight">${event.title}</h3>
                         <div class="event-meta">
                             <div class="event-meta-item">
-                                📅 ${event.date}
+                                📅 ${new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT')}
                             </div>
                             <div class="event-meta-item">
                                 📍 ${event.location}

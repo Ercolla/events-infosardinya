@@ -661,7 +661,7 @@
         // Carica gli eventi all'avvio della pagina
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const events = await getAllEvents();
+                const events = await getAllEvents(4);
                 renderEvents(events);
             } catch (error) {
                 console.error('Errore nel caricamento degli eventi:', error);

@@ -6,13 +6,19 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Rinominato per evitare conflitto con window.supabase del CDN
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Funzione per ottenere tutti gli eventi
-async function getAllEvents() {
+// Funzione per ottenere tutti gli eventi (limit opzionale per homepage/paginazione)
+async function getAllEvents(limit) {
     try {
-        const { data, error } = await supabaseClient
+        let query = supabaseClient
             .from('events')
             .select('*')
             .order('date', { ascending: true });
+
+        if (limit) {
+            query = query.limit(limit);
+        }
+
+        const { data, error } = await query;
 
         if (error) {
             console.error('Errore nel caricamento degli eventi:', error);

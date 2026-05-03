@@ -329,17 +329,27 @@
         let filteredEvents = [];
         let currentCategoryFilter = 'all';
         let currentCityFilter = 'all';
+        // Paginazione: max 12 eventi per pagina
+        const EVENTS_PER_PAGE = 12;
+        let currentPage = 1;
 
-        // Funzione per renderizzare gli eventi
+        // Funzione per renderizzare gli eventi con paginazione
         function renderEvents(events) {
             const container = document.getElementById('events-container');
 
             if (events.length === 0) {
                 container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #686868;">Nessun evento disponibile per i filtri selezionati</div>';
+                renderPagination(0);
                 return;
             }
 
-            container.innerHTML = events.map(event => `
+            // Calcola la pagina corrente
+            const totalPages = Math.ceil(events.length / EVENTS_PER_PAGE);
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * EVENTS_PER_PAGE;
+            const pageEvents = events.slice(start, start + EVENTS_PER_PAGE);
+
+            container.innerHTML = pageEvents.map(event => `
                 <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer;">
                     <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image lightbox-trigger" style="cursor: zoom-in;">
                     <div class="event-body">
@@ -354,6 +364,60 @@
                     </div>
                 </div>
             `).join('');
+
+            renderPagination(totalPages);
+        }
+
+        // Renderizza i controlli di paginazione
+        function renderPagination(totalPages) {
+            var existing = document.getElementById('pagination-controls');
+            if (existing) existing.remove();
+
+            if (totalPages <= 1) return;
+
+            var wrapper = document.createElement('div');
+            wrapper.id = 'pagination-controls';
+            wrapper.style.cssText = 'display:flex; justify-content:center; align-items:center; gap:0.5rem; margin-top:2.5rem; flex-wrap:wrap;';
+
+            // Bottone Precedente
+            var prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Precedente';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.className = 'filter-btn';
+            prevBtn.style.cssText = prevBtn.disabled ? 'opacity:0.4; cursor:default;' : '';
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) { currentPage--; renderEvents(filteredEvents); window.scrollTo({top: document.querySelector('.events-content-section').offsetTop - 80, behavior:'smooth'}); }
+            });
+            wrapper.appendChild(prevBtn);
+
+            // Bottoni numerati
+            for (var i = 1; i <= totalPages; i++) {
+                (function(page) {
+                    var btn = document.createElement('button');
+                    btn.textContent = page;
+                    btn.className = 'filter-btn' + (page === currentPage ? ' active' : '');
+                    btn.style.cssText = 'min-width:42px;';
+                    btn.addEventListener('click', function() {
+                        currentPage = page;
+                        renderEvents(filteredEvents);
+                        window.scrollTo({top: document.querySelector('.events-content-section').offsetTop - 80, behavior:'smooth'});
+                    });
+                    wrapper.appendChild(btn);
+                })(i);
+            }
+
+            // Bottone Successivo
+            var nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Successivo →';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.className = 'filter-btn';
+            nextBtn.style.cssText = nextBtn.disabled ? 'opacity:0.4; cursor:default;' : '';
+            nextBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) { currentPage++; renderEvents(filteredEvents); window.scrollTo({top: document.querySelector('.events-content-section').offsetTop - 80, behavior:'smooth'}); }
+            });
+            wrapper.appendChild(nextBtn);
+
+            document.querySelector('.events-content-section .max-w-7xl').appendChild(wrapper);
         }
 
         // Normalizza stringa per confronto (rimuove accenti, spazi multipli, lowercase)
@@ -363,8 +427,9 @@
                 .replace(/\s+/g, ' ');
         }
 
-        // Funzione per filtrare gli eventi
+        // Funzione per filtrare gli eventi (resetta alla pagina 1 ad ogni cambio filtro)
         function applyFilters() {
+            currentPage = 1;
             var catFilter = normalizeStr(currentCategoryFilter);
             var cityFilter = normalizeStr(currentCityFilter);
             // Supporto multi-città: "cagliari,castiadas" viene splittato

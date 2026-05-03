@@ -40,7 +40,13 @@
       "Bash(git -C c:/eventsIinfosardinyaIt_CLAUDCODEMAX add *.html)",
       "Bash(npx http-server *)",
       "Bash(npx -y http-server . -p 3000)",
-      "Bash(git *)"
+      "Bash(git *)",
+      "WebFetch(domain:www.visititaly.eu)",
+      "WebFetch(domain:www.ellepirental.com)",
+      "WebFetch(domain:www.isolecheparlano.it)",
+      "WebFetch(domain:sardegnatuttolanno.net)",
+      "Bash(node -c update_events.js)",
+      "Bash(node -e \"const fs=require\\('fs'\\); const f=fs.readFileSync\\('.github/workflows/daily_update.yml','utf8'\\); console.log\\('YAML: ' + f.split\\('\\\\n'\\).length + ' righe'\\); if\\(f.includes\\('cron:'\\) && f.includes\\('node update_events.js'\\) && f.includes\\('SUPABASE_URL'\\)\\) console.log\\('Workflow structure OK'\\);\")"
     ]
   }
 }

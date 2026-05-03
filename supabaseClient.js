@@ -6,12 +6,16 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Rinominato per evitare conflitto con window.supabase del CDN
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Funzione per ottenere tutti gli eventi (limit opzionale per homepage/paginazione)
+// Funzione per ottenere gli eventi futuri (limit opzionale per homepage/paginazione)
+// Filtra solo eventi con data >= oggi oppure con data_end >= oggi (multi-giorno in corso)
 async function getAllEvents(limit) {
     try {
+        const today = new Date().toISOString().split('T')[0];
+
         let query = supabaseClient
             .from('events')
             .select('*')
+            .or('date.gte.' + today + ',date_end.gte.' + today)
             .order('date', { ascending: true });
 
         if (limit) {

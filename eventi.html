@@ -351,18 +351,16 @@
 
             container.innerHTML = pageEvents.map(event => `
                 <div class="event-card" onclick="window.location.href='dettaglio-evento.html?id=${event.id}'" style="cursor: pointer;">
-                    <img src="${event.image || 'https://images.pexels.com/photos/428364/pexels-photo-428364.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=400'}" alt="${event.title}" class="event-image lightbox-trigger" style="cursor: zoom-in;">
+                    ${event.image ? '<img src="' + event.image + '" alt="' + event.title + '" class="event-image lightbox-trigger" style="cursor: zoom-in;">' : '<div class="event-image" style="display:flex;align-items:center;justify-content:center;font-size:3rem;background:linear-gradient(135deg,var(--color-sardegna-blue),#005fa3);color:white;">📅</div>'}
                     <div class="event-body">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                            <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
-                            ${event.source_name ? '<a href="' + (event.source_url || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style="background:rgba(0,119,182,0.1); color:var(--color-sardegna-blue); text-decoration:none; white-space:nowrap;" title="Fonte: ' + event.source_name + '">🔗 ' + event.source_name + '</a>' : ''}
-                        </div>
+                        <div class="event-category">${event.badge_text || 'In Evidenza'}</div>
                         <h3 class="event-title">${event.title}</h3>
                         <div class="event-info">
                             <div class="event-info-item">📅 ${event.date_end && event.date_end !== event.date ? 'Dal ' + new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT') + ' al ' + new Date(event.date_end + 'T00:00:00').toLocaleDateString('it-IT') : new Date(event.date + 'T00:00:00').toLocaleDateString('it-IT')}</div>
                             <div class="event-info-item">📍 ${event.location}</div>
                             <div class="event-info-item">👥 ${event.capacity || 'Posti disponibili'}</div>
                         </div>
+                        ${event.source_name ? '<p class="text-xs text-gray-500 mt-2">Fonte: <a href="' + (event.source_url || '#') + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="text-blue-600 hover:underline">' + event.source_name + '</a></p>' : ''}
                         <div class="event-cta" style="cursor: pointer;">Scopri di Più</div>
                     </div>
                 </div>

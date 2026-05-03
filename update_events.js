@@ -74,7 +74,7 @@ async function fetchPage(url) {
     }
 }
 
-// Recupera descrizione e immagine dalla pagina di dettaglio dell'evento
+// Recupera descrizione INTEGRALE e immagine REALE dalla pagina di dettaglio
 async function fetchEventDetails(detailUrl) {
     if (!detailUrl || !detailUrl.startsWith('http')) return { description: '', image: '' };
 
@@ -83,54 +83,123 @@ async function fetchEventDetails(detailUrl) {
 
     const $ = cheerio.load(html);
 
-    // Estrai descrizione: cerca nel contenuto principale dell'articolo
+    // --- IMMAGINE: priorita' assoluta a og:image (locandina ufficiale) ---
+    let image = '';
+
+    // 1. Open Graph image (la piu' affidabile come poster/locandina)
+    const ogImage = $('meta[property="og:image"]').attr('content') || '';
+    if (ogImage.startsWith('http') && !ogImage.includes('logo') && !ogImage.includes('icon') && !ogImage.includes('favicon')) {
+        image = ogImage;
+    }
+
+    // 2. Twitter card image
+    if (!image) {
+        const twImage = $('meta[name="twitter:image"]').attr('content') || '';
+        if (twImage.startsWith('http') && !twImage.includes('logo')) image = twImage;
+    }
+
+    // 3. Featured image WordPress / immagine principale nel contenuto
+    if (!image) {
+        const imgSelectors = [
+            'img.wp-post-image',
+            '.featured-image img',
+            'article img[src*="upload"]',
+            '.entry-content img',
+            '.post-content img',
+            '.event-image img',
+            '.tribe-events-event-image img',
+            'img[src*="evento"]',
+            'img[src*="event"]',
+            'img[src*="locandina"]',
+            'img[src*="manifesto"]'
+        ];
+        for (const selector of imgSelectors) {
+            const el = $(selector).first();
+            if (el.length) {
+                const src = el.attr('src') || el.attr('data-src') || el.attr('data-lazy-src') || '';
+                // Filtra: no icone, no thumbnail troppo piccole, no logo
+                if (src.startsWith('http') && !src.includes('150x150') && !src.includes('50x50')
+                    && !src.includes('logo') && !src.includes('icon') && !src.includes('avatar')
+                    && !src.includes('placeholder') && !src.includes('lazy.png')) {
+                    image = src;
+                    break;
+                }
+            }
+        }
+    }
+
+    // 4. Ultima risorsa: la prima immagine grande nel body
+    if (!image) {
+        $('img').each((_, el) => {
+            if (image) return;
+            const src = $(el).attr('src') || $(el).attr('data-src') || '';
+            const width = parseInt($(el).attr('width') || '0', 10);
+            if (src.startsWith('http') && width >= 300
+                && !src.includes('logo') && !src.includes('icon') && !src.includes('avatar')) {
+                image = src;
+            }
+        });
+    }
+
+    if (!image) {
+        console.log(`    ⚠️  Nessuna immagine trovata per: ${detailUrl}`);
+    }
+
+    // --- DESCRIZIONE: estrai TUTTO il contenuto testuale informativo ---
     let description = '';
+
+    // Selettori contenuto principale in ordine di priorita'
     const contentSelectors = [
-        '.entry-content', '.post-content', '.event-description',
-        '.tribe-events-single-event-description', 'article .content',
-        '.event-content', '.single-content', 'main p'
+        '.tribe-events-single-event-description',
+        '.entry-content',
+        '.post-content',
+        '.event-description',
+        '.event-content',
+        'article .content',
+        '.single-content',
+        '[itemprop="description"]',
+        '.description',
+        'main article'
     ];
+
     for (const selector of contentSelectors) {
         const el = $(selector);
         if (el.length) {
-            description = el.find('p').map((_, p) => $(p).text().trim()).get().join(' ').trim();
-            if (description.length > 50) break;
-        }
-    }
-    // Fallback: prendi i primi paragrafi significativi
-    if (description.length < 50) {
-        description = $('p').filter((_, p) => $(p).text().trim().length > 30)
-            .slice(0, 3)
-            .map((_, p) => $(p).text().trim())
-            .get().join(' ');
-    }
-    // Limita a 500 caratteri per evitare testi troppo lunghi
-    if (description.length > 500) {
-        description = description.substring(0, 497) + '...';
-    }
-
-    // Estrai immagine principale (locandina evento, non icone o loghi)
-    let image = '';
-    const imgSelectors = [
-        'article img[src*="upload"]', '.entry-content img', '.post-content img',
-        '.event-image img', 'meta[property="og:image"]', '.featured-image img',
-        'img.wp-post-image', 'img[src*="evento"]', 'img[src*="event"]'
-    ];
-    for (const selector of imgSelectors) {
-        const el = $(selector).first();
-        if (el.length) {
-            const src = el.attr('content') || el.attr('src') || el.attr('data-src') || '';
-            // Filtra immagini troppo piccole (icone, placeholder)
-            if (src.startsWith('http') && !src.includes('150x150') && !src.includes('logo') && !src.includes('icon')) {
-                image = src;
+            // Rimuovi elementi non informativi prima di estrarre il testo
+            el.find('script, style, nav, .social-share, .related-posts, .comments, .sidebar, footer, .ad, .advertisement').remove();
+            // Estrai tutti i paragrafi e li
+            const paragraphs = el.find('p, li').map((_, p) => $(p).text().trim()).get()
+                .filter(t => t.length > 20 && !t.includes('Cookie') && !t.includes('Privacy Policy'));
+            if (paragraphs.length > 0) {
+                description = paragraphs.join('\n\n');
                 break;
             }
         }
     }
-    // Fallback: og:image meta tag
-    if (!image) {
-        const ogImage = $('meta[property="og:image"]').attr('content') || '';
-        if (ogImage.startsWith('http')) image = ogImage;
+
+    // Fallback: tutti i paragrafi significativi della pagina
+    if (description.length < 80) {
+        const paragraphs = $('p')
+            .filter((_, p) => {
+                const text = $(p).text().trim();
+                return text.length > 40 && !text.includes('Cookie') && !text.includes('©');
+            })
+            .slice(0, 10)
+            .map((_, p) => $(p).text().trim())
+            .get();
+        description = paragraphs.join('\n\n');
+    }
+
+    // Pulizia: rimuovi spazi multipli ma mantieni la struttura paragrafi
+    description = description.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+
+    // Limita a 2000 caratteri per evitare problemi di storage, ma preserva il contenuto utile
+    if (description.length > 2000) {
+        description = description.substring(0, 1997) + '...';
+    }
+
+    if (!description) {
+        console.log(`    ⚠️  Nessuna descrizione trovata per: ${detailUrl}`);
     }
 
     return { description, image };
@@ -552,23 +621,38 @@ async function main() {
     // Assegna badge automatici
     allScraped = allScraped.map(assignBadge);
 
-    // Arricchisci gli eventi: recupera descrizione e immagine dalle pagine di dettaglio
-    console.log('\n--- Arricchimento eventi (descrizioni + immagini) ---');
+    // Arricchisci OGNI evento: naviga la pagina fonte per descrizione integrale e immagine reale
+    console.log('\n--- Arricchimento eventi (descrizioni integrali + poster reali) ---');
+    let enriched = 0;
+    let noImage = 0;
     for (let i = 0; i < allScraped.length; i++) {
         const event = allScraped[i];
-        // Arricchisci solo se manca descrizione o immagine e ha un URL di dettaglio
-        if ((!event.description || !event.image) && event.source_url && event.source_url.startsWith('http')) {
-            const details = await fetchEventDetails(event.source_url);
-            if (!event.description && details.description) {
-                event.description = details.description;
-            }
-            if (!event.image && details.image) {
-                event.image = details.image;
-            }
-            // Pausa breve per non sovraccaricare i server fonte
-            await new Promise(r => setTimeout(r, 500));
+        if (!event.source_url || !event.source_url.startsWith('http')) continue;
+
+        // Naviga SEMPRE la pagina di dettaglio per ottenere contenuto completo
+        console.log(`  [${i + 1}/${allScraped.length}] Arricchendo: "${event.title.substring(0, 50)}..."`);
+        const details = await fetchEventDetails(event.source_url);
+
+        // Descrizione: sostituisci sempre con quella completa dalla fonte
+        if (details.description && details.description.length > (event.description || '').length) {
+            event.description = details.description;
         }
+
+        // Immagine: usa quella della fonte se migliore o se manca
+        if (details.image) {
+            event.image = details.image;
+            enriched++;
+        } else if (!event.image) {
+            // Nessuna immagine trovata: lascia vuoto (NO placeholder generici)
+            event.image = null;
+            noImage++;
+        }
+
+        // Pausa anti-flood tra le richieste
+        await new Promise(r => setTimeout(r, 600));
     }
+    console.log(`\n  Arricchiti con immagine: ${enriched}`);
+    console.log(`  Senza immagine disponibile: ${noImage}`);
 
     // Inserisci su Supabase (con deduplicazione)
     const stats = await insertNewEvents(allScraped);
